@@ -1,0 +1,153 @@
+{
+  "common": {
+    "continue": "Dalej", "back": "Wstecz", "save": "Zapisz", "cancel": "Anuluj",
+    "done": "Gotowe", "loading": "Ładowanie…", "error": "Coś poszło nie tak. Spróbuj ponownie.",
+    "retry": "Spróbuj ponownie", "left": "Lewy", "right": "Prawy", "optional": "opcjonalne"
+  },
+  "onboarding": {
+    "stepOf": "Krok {{step}} z {{total}}",
+    "welcome": {
+      "title": "CulinaryExpert",
+      "tagline": "Inteligentne przygotowanie do zdrowego życia",
+      "description": "Twój asystent kulinarny AI do planowania posiłków bez odpadów, precyzyjnego odżywiania i gotowania wsadowego bez wysiłku.",
+      "getStarted": "Zacznij",
+      "loginHint": "Masz już konto? Zaloguj się z Profilu"
+    },
+    "unitSelection": {
+      "title": "Wybierz jednostki miary", "subtitle": "Możesz to zmienić później w Ustawieniach.",
+      "metric": "Metryczny", "metricDesc": "kg, cm, litry",
+      "imperial": "Imperialny", "imperialDesc": "funty, cale, filiżanki"
+    },
+    "disclaimer": {
+      "title": "Zastrzeżenie Medyczne", "subtitle": "Przeczytaj i zaakceptuj przed kontynuowaniem",
+      "warningTitle": "Ważna Informacja",
+      "p1": "CulinaryExpert to aplikacja fitness i lifestyle zaprojektowana, aby pomóc Ci planować odżywcze posiłki i śledzić wskaźniki zdrowotne.",
+      "p2": "Informacje, obliczenia i zalecenia mają wyłącznie charakter informacyjny i NIE stanowią porady medycznej.",
+      "p3": "Zawsze zasięgaj porady lekarza przed wprowadzeniem znaczących zmian w diecie.",
+      "p4": "Jeśli masz schorzenie, skonsultuj się z lekarzem przed użyciem tej aplikacji.",
+      "p5": "Obliczenia kalorii i składu ciała są szacunkami opartymi na średnich populacyjnych.",
+      "checkboxLabel": "Przeczytałem/am i zrozumiałem/am Zastrzeżenie Medyczne",
+      "acceptButton": "Akceptuję — Dalej"
+    },
+    "biologicalData": {
+      "title": "Dane biologiczne", "subtitle": "Używane do obliczenia BMR i składu ciała.",
+      "sex": "Płeć biologiczna", "male": "Mężczyzna", "female": "Kobieta",
+      "age": "Wiek (lata)", "weight": "Waga ({{unit}})", "height": "Wzrost ({{unit}})"
+    },
+    "measurements": {
+      "title": "Pomiary taśmą", "subtitle": "Do obliczenia tkanki tłuszczowej (Formuła Marynarki Wojennej USA).",
+      "required": "Wymagane", "optional": "Opcjonalne (do śledzenia postępów)", "bodySculpt": "Rzeźbienie Sylwetki",
+      "waist": "Obwód pasa", "neck": "Obwód szyi", "hips": "Obwód bioder",
+      "chest": "Obwód klatki piersiowej", "arm": "Obwód bicepsa",
+      "forearm": "Obwód przedramienia", "thigh": "Obwód uda",
+      "calf": "Obwód łydki", "sideNote": "Mierz tylko jedną stronę — wartości dotyczą obu stron."
+    },
+    "lifestyle": {
+      "title": "Styl życia", "activityLevel": "Poziom aktywności", "primaryGoal": "Główny cel",
+      "budget": "Tygodniowy budżet na zakupy ({{currency}}, opcjonalne)", "budgetPlaceholder": "np. 80",
+      "cookTime": "Maksymalny czas gotowania na posiłek (minuty)",
+      "allergies": "Alergie i nietolerancje",
+      "favoriteFoods": "Ulubione produkty (oddzielone przecinkami)",
+      "favoriteFoodsPlaceholder": "np. kurczak, quinoa, brokuły",
+      "buildPlan": "Stwórz Mój Plan", "settingUp": "Tworzenie planu…"
+    },
+    "healthScore": {
+      "title": "Twój Wynik Zdrowotny", "subtitle": "Obliczony na podstawie danych biologicznych i stylu życia.",
+      "dailyCalories": "Dzienny Cel Kaloryczny", "bodyFat": "Szacowana Tkanka Tłuszczowa",
+      "description": "Twój spersonalizowany 7-dniowy plan posiłków został wygenerowany na podstawie Twoich danych.",
+      "viewPlan": "Zobacz Mój Plan Posiłków"
+    }
+  },
+  "nav": {
+    "today": "Dziś", "mealPlan": "Plan Posiłków", "prepHub": "Kuchnia",
+    "groceries": "Zakupy", "profile": "Profil"
+  },
+  "activity": {
+    "sedentary": "Siedzący", "light": "Lekki", "moderate": "Umiarkowany", "active": "Aktywny", "veryActive": "Bardzo Aktywny",
+    "sedentaryDesc": "Praca biurowa, mało ruchu", "lightDesc": "1-3 dni/tydzień ćwiczeń",
+    "moderateDesc": "3-5 dni/tydzień ćwiczeń", "activeDesc": "6-7 dni/tydzień ćwiczeń",
+    "veryActiveDesc": "Praca fizyczna + codzienne ćwiczenia"
+  },
+  "goal": {
+    "weightLoss": "Chudnięcie", "maintenance": "Utrzymanie wagi",
+    "hypertrophy": "Budowa mięśni", "endurance": "Wytrzymałość"
+  },
+  "allergens": {
+    "Gluten": "Gluten", "Milk": "Mleko", "Eggs": "Jaja", "Fish": "Ryby",
+    "Shellfish": "Owoce morza", "Tree Nuts": "Orzechy drzewne", "Peanuts": "Orzeszki ziemne", "Soy": "Soja", "Sesame": "Sezam"
+  },
+  "profile": {
+    "title": "Profil",
+    "personalInfo": "Informacje Osobiste",
+    "age": "Wiek", "height": "Wzrost", "sex": "Płeć",
+    "goalLabel": "Cel", "activityLevelLabel": "Poziom Aktywności",
+    "maxCookTimeLabel": "Maks. Czas Gotowania", "minutes": "minut",
+    "allergiesLabel": "Alergie", "favouriteFoodsLabel": "Ulubione Produkty",
+    "currentMeasurements": "Aktualne Pomiary",
+    "weight": "Waga", "bodyFat": "Tkanka Tłuszczowa", "waist": "Pas", "chest": "Klatka piersiowa",
+    "arm": "Ramię", "thigh": "Udo", "calf": "Łydka", "bicep": "Biceps",
+    "score": "Wynik",
+    "waistInput": "Obwód pasa", "chestInput": "Obwód klatki",
+    "bicepCirc": "Obwód bicepsa", "thighCirc": "Obwód uda", "calfCirc": "Obwód łydki",
+    "logMeasurement": "+ Dodaj Nowy Pomiar",
+    "progressCharts": "Wykresy Postępów",
+    "languageTitle": "Język Aplikacji", "language": "Język",
+    "legal": "Prawne",
+    "privacyPolicy": "Polityka Prywatności", "termsOfService": "Warunki Korzystania", "medicalDisclaimer": "Zastrzeżenie Medyczne",
+    "privacyP1": "CulinaryExpert gromadzi tylko dane podane podczas rejestracji oraz anonimowe analizy użytkowania.",
+    "privacyP2": "Twoje dane są przechowywane bezpiecznie i nigdy nie są sprzedawane osobom trzecim.",
+    "privacyP3": "Możesz usunąć konto w dowolnym momencie, kontaktując się z pomocą techniczną.",
+    "privacyP4": "Stosujemy szyfrowanie standardowe dla branży dla wszystkich danych.",
+    "termsP1": "Korzystając z CulinaryExpert, zgadzasz się używać go wyłącznie do celów osobistych, niekomercyjnych.",
+    "termsP2": "Aplikacja zapewnia wskazówki żywieniowe oparte na naukowo zwalidowanych formułach.",
+    "termsP3": "Jesteś odpowiedzialny za dokładność wprowadzonych danych.",
+    "termsP4": "Zastrzegamy sobie prawo do aktualizacji tych warunków w dowolnym momencie.",
+    "signOut": "Wyloguj", "signOutConfirm": "Wyloguj", "signOutMessage": "Czy na pewno chcesz się wylogować?"
+  },
+  "dashboard": {
+    "goodMorning": "Dzień dobry", "goodAfternoon": "Dzień dobry", "goodEvening": "Dobry wieczór",
+    "healthScore": "Wynik Zdrowotny", "kcalPerDay": "kcal/dzień",
+    "todaysTargets": "Dzisiejsze Cele",
+    "calories": "Kalorie", "protein": "Białko", "carbs": "Węglowodany", "fat": "Tłuszcze",
+    "todaysMeals": "Dzisiejsze Posiłki", "seePlan": "Zobacz plan →", "notPlanned": "Nieplanowane",
+    "generateFirst": "Wygeneruj swój pierwszy plan posiłków",
+    "quickActions": "Szybkie Akcje",
+    "lifestyleModes": "Tryby Stylu Życia",
+    "budgetModeLabel": "💰 Tryb Budżetowy", "budgetModeDesc": "Preferuj tańsze składniki",
+    "fastLifeLabel": "⚡ Szybkie Życie (<15 min)", "fastLifeDesc": "Tylko szybko przygotowywane posiłki",
+    "bodySculptLabel": "💪 Rzeźbienie Sylwetki", "bodySculptDesc": "Wysokobiałkowe, zoptymalizowane dla siłowni"
+  },
+  "mealPlan": {
+    "title": "7-Dniowy Plan Posiłków",
+    "loading": "Ładowanie planu posiłków…",
+    "noMealPlan": "Brak planu posiłków",
+    "noMealPlanDesc": "Wygeneruj spersonalizowany 7-dniowy plan posiłków oparty na Twoich celach żywieniowych, preferencjach i czasie gotowania.",
+    "generate": "✨  Wygeneruj Mój Plan 7-Dniowy",
+    "generating": "Generowanie planu…",
+    "feature1": "Spersonalizowany pod Twoje makro i cele",
+    "feature2": "Respektuje Twój maksymalny czas gotowania",
+    "feature3": "Unika Twoich alergenów i niechcianych produktów",
+    "feature4": "Automatycznie generuje listę zakupów",
+    "regenerate": "↺ Wygeneruj ponownie",
+    "regenerateTitle": "Wygeneruj Plan Ponownie",
+    "regenerateMessage": "To stworzy nowy 7-dniowy plan na podstawie Twoich opinii. Kontynuować?",
+    "regenerateConfirm": "Wygeneruj ponownie",
+    "noPlanToday": "Brak zaplanowanych posiłków na ten dzień.",
+    "howWasIt": "Jak było?",
+    "lovedIt": "❤️ Świetne",
+    "notAFan": "👎 Nie dla mnie",
+    "noRecipe": "Brak przypisanego przepisu",
+    "shopIngredients": "🛒  Kup Składniki dla Tego Planu",
+    "breakfast": "Śniadanie", "lunch": "Obiad", "dinner": "Kolacja", "snack": "Przekąska",
+    "generationFailed": "Generowanie nie powiodło się",
+    "generationError": "Nie można wygenerować planu posiłków. Sprawdź połączenie."
+  },
+  "groceries": {
+    "wholeWeek": "Cały Tydzień", "nextDay": "Następny Dzień",
+    "itemsChecked": "{{checked}} / {{total}} produktów zaznaczonych",
+    "loading": "Tworzenie listy zero waste…",
+    "produce": "Warzywa i Owoce", "proteins": "Białka", "dairy": "Nabiał",
+    "dryGoods": "Produkty Suche", "canned": "Konserwy", "frozen": "Mrożonki",
+    "condiments": "Przyprawy", "bakery": "Piekarnia", "other": "Inne"
+  }
+}

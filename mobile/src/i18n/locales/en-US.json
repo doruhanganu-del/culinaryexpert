@@ -1,0 +1,153 @@
+{
+  "common": {
+    "continue": "Continue", "back": "Back", "save": "Save", "cancel": "Cancel",
+    "done": "Done", "loading": "Loading…", "error": "Something went wrong. Please try again.",
+    "retry": "Retry", "left": "Left", "right": "Right", "optional": "optional"
+  },
+  "onboarding": {
+    "stepOf": "Step {{step}} of {{total}}",
+    "welcome": {
+      "title": "CulinaryExpert",
+      "tagline": "Smart Prep for a Healthy Life",
+      "description": "Your AI-powered culinary companion for zero-waste meal planning, precise nutrition targeting, and effortless batch cooking.",
+      "getStarted": "Get Started",
+      "loginHint": "Already have an account? Sign in from Profile"
+    },
+    "unitSelection": {
+      "title": "Choose your units", "subtitle": "You can change this later in Settings.",
+      "metric": "Metric", "metricDesc": "kg, cm, liters",
+      "imperial": "Imperial", "imperialDesc": "lbs, inches, cups"
+    },
+    "disclaimer": {
+      "title": "Medical Disclaimer", "subtitle": "Please read and accept before continuing",
+      "warningTitle": "Important Notice",
+      "p1": "CulinaryExpert is a fitness and lifestyle application designed to help you plan nutritious meals and track your health metrics.",
+      "p2": "The information, calculations, and recommendations provided by this application are for informational and educational purposes only and do NOT constitute medical advice, diagnosis, or treatment.",
+      "p3": "Always seek the advice of a qualified healthcare provider before making any significant changes to your diet, exercise routine, or health management plan.",
+      "p4": "If you have or suspect you may have a medical condition such as diabetes, heart disease, or eating disorders, consult a licensed physician or registered dietitian before using this application.",
+      "p5": "The calorie, macro, and body composition calculations are estimates based on population averages and may not be accurate for your individual physiology.",
+      "checkboxLabel": "I have read and understood the Medical Disclaimer",
+      "acceptButton": "I Accept — Continue"
+    },
+    "biologicalData": {
+      "title": "Biological data", "subtitle": "Used to calculate your BMR and body composition.",
+      "sex": "Biological sex", "male": "Male", "female": "Female",
+      "age": "Age (years)", "weight": "Weight ({{unit}})", "height": "Height ({{unit}})"
+    },
+    "measurements": {
+      "title": "Tape measurements", "subtitle": "Used for body fat calculation via the US Navy Formula.",
+      "required": "Required", "optional": "Optional (for progress tracking)", "bodySculpt": "Body Sculpting",
+      "waist": "Waist circumference", "neck": "Neck circumference", "hips": "Hip circumference",
+      "chest": "Chest circumference", "arm": "Bicep circumference",
+      "forearm": "Forearm circumference", "thigh": "Thigh circumference",
+      "calf": "Calf circumference", "sideNote": "Measure one side only — values apply to both sides."
+    },
+    "lifestyle": {
+      "title": "Lifestyle", "activityLevel": "Activity level", "primaryGoal": "Primary goal",
+      "budget": "Weekly grocery budget ({{currency}}, optional)", "budgetPlaceholder": "e.g. 80",
+      "cookTime": "Max cooking time per meal (minutes)",
+      "allergies": "Allergies & intolerances",
+      "favoriteFoods": "Favorite foods (comma-separated)",
+      "favoriteFoodsPlaceholder": "e.g. chicken, quinoa, broccoli",
+      "buildPlan": "Build My Plan", "settingUp": "Setting up your plan…"
+    },
+    "healthScore": {
+      "title": "Your Health Score", "subtitle": "Calculated from your biological data and lifestyle.",
+      "dailyCalories": "Daily Calorie Target", "bodyFat": "Estimated Body Fat",
+      "description": "Your personalized 7-day meal plan has been generated based on your data. Swipe through your plan, shop for groceries, and start batch cooking!",
+      "viewPlan": "View My Meal Plan"
+    }
+  },
+  "nav": {
+    "today": "Today", "mealPlan": "Meal Plan", "prepHub": "Prep Hub",
+    "groceries": "Groceries", "profile": "Profile"
+  },
+  "activity": {
+    "sedentary": "Sedentary", "light": "Light", "moderate": "Moderate", "active": "Active", "veryActive": "Very Active",
+    "sedentaryDesc": "Desk job, little exercise", "lightDesc": "1-3 days/week exercise",
+    "moderateDesc": "3-5 days/week exercise", "activeDesc": "6-7 days/week exercise",
+    "veryActiveDesc": "Physical job + daily exercise"
+  },
+  "goal": {
+    "weightLoss": "Lose Weight", "maintenance": "Maintain",
+    "hypertrophy": "Build Muscle", "endurance": "Endurance"
+  },
+  "allergens": {
+    "Gluten": "Gluten", "Milk": "Milk", "Eggs": "Eggs", "Fish": "Fish",
+    "Shellfish": "Shellfish", "Tree Nuts": "Tree Nuts", "Peanuts": "Peanuts", "Soy": "Soy", "Sesame": "Sesame"
+  },
+  "profile": {
+    "title": "Profile",
+    "personalInfo": "Personal Information",
+    "age": "Age", "height": "Height", "sex": "Sex",
+    "goalLabel": "Goal", "activityLevelLabel": "Activity Level",
+    "maxCookTimeLabel": "Max Cooking Time", "minutes": "minutes",
+    "allergiesLabel": "Allergies", "favouriteFoodsLabel": "Favourite Foods",
+    "currentMeasurements": "Current Measurements",
+    "weight": "Weight", "bodyFat": "Body Fat", "waist": "Waist", "chest": "Chest",
+    "arm": "Arm", "thigh": "Thigh", "calf": "Calf", "bicep": "Bicep",
+    "score": "Score",
+    "waistInput": "Waist", "chestInput": "Chest",
+    "bicepCirc": "Bicep circumference", "thighCirc": "Thigh circumference", "calfCirc": "Calf circumference",
+    "logMeasurement": "+ Log New Measurement",
+    "progressCharts": "Progress Charts",
+    "languageTitle": "App Language", "language": "Language",
+    "legal": "Legal",
+    "privacyPolicy": "Privacy Policy", "termsOfService": "Terms of Service", "medicalDisclaimer": "Medical Disclaimer",
+    "privacyP1": "CulinaryExpert collects only the data you provide during onboarding (biological metrics, lifestyle preferences) and anonymous usage analytics.",
+    "privacyP2": "Your data is stored securely and is never sold to third parties. It is used solely to generate personalised meal plans and nutrition recommendations.",
+    "privacyP3": "You may delete your account and all associated data at any time by contacting support.",
+    "privacyP4": "We use industry-standard encryption for data in transit and at rest.",
+    "termsP1": "By using CulinaryExpert you agree to use it for personal, non-commercial purposes only.",
+    "termsP2": "The app provides nutritional guidance based on scientifically validated formulas. Results are estimates and do not replace professional medical or dietetic advice.",
+    "termsP3": "You are responsible for ensuring the accuracy of the data you enter. Incorrect measurements will affect the quality of recommendations.",
+    "termsP4": "We reserve the right to update these terms at any time. Continued use of the app constitutes acceptance of any changes.",
+    "signOut": "Sign Out", "signOutConfirm": "Sign Out", "signOutMessage": "Are you sure you want to sign out?"
+  },
+  "dashboard": {
+    "goodMorning": "Good morning", "goodAfternoon": "Good afternoon", "goodEvening": "Good evening",
+    "healthScore": "Health Score", "kcalPerDay": "kcal/day",
+    "todaysTargets": "Today's Targets",
+    "calories": "Calories", "protein": "Protein", "carbs": "Carbs", "fat": "Fat",
+    "todaysMeals": "Today's Meals", "seePlan": "See plan →", "notPlanned": "Not planned",
+    "generateFirst": "Generate your first meal plan",
+    "quickActions": "Quick Actions",
+    "lifestyleModes": "Lifestyle Modes",
+    "budgetModeLabel": "💰 Budget Mode", "budgetModeDesc": "Prioritise cheaper ingredients",
+    "fastLifeLabel": "⚡ Fast Life (<15 min)", "fastLifeDesc": "Quick prep meals only",
+    "bodySculptLabel": "💪 Body Sculpt", "bodySculptDesc": "High protein, gym-optimised"
+  },
+  "mealPlan": {
+    "title": "7-Day Meal Plan",
+    "loading": "Loading your meal plan…",
+    "noMealPlan": "No meal plan yet",
+    "noMealPlanDesc": "Generate your personalised 7-day meal plan based on your nutrition goals, preferences, and cooking time.",
+    "generate": "✨  Generate My 7-Day Plan",
+    "generating": "Generating your plan…",
+    "feature1": "Personalised to your macros & goals",
+    "feature2": "Respects your max cooking time",
+    "feature3": "Avoids your allergens & dislikes",
+    "feature4": "Auto-generates your grocery list",
+    "regenerate": "↺ Regenerate",
+    "regenerateTitle": "Regenerate Plan",
+    "regenerateMessage": "This will create a new 7-day plan based on your feedback. Continue?",
+    "regenerateConfirm": "Regenerate",
+    "noPlanToday": "No meals planned for this day.",
+    "howWasIt": "How was it?",
+    "lovedIt": "❤️ Loved it",
+    "notAFan": "👎 Not a fan",
+    "noRecipe": "No recipe assigned",
+    "shopIngredients": "🛒  Shop Ingredients for This Plan",
+    "breakfast": "Breakfast", "lunch": "Lunch", "dinner": "Dinner", "snack": "Snack",
+    "generationFailed": "Generation failed",
+    "generationError": "Could not generate meal plan. Please check your connection."
+  },
+  "groceries": {
+    "wholeWeek": "Whole Week", "nextDay": "Next Day",
+    "itemsChecked": "{{checked}} / {{total}} items checked",
+    "loading": "Building your zero-waste list…",
+    "produce": "Produce", "proteins": "Proteins", "dairy": "Dairy",
+    "dryGoods": "Dry Goods", "canned": "Canned", "frozen": "Frozen",
+    "condiments": "Condiments", "bakery": "Bakery", "other": "Other"
+  }
+}

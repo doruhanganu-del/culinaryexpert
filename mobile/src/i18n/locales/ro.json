@@ -1,0 +1,153 @@
+{
+  "common": {
+    "continue": "Continuă", "back": "Înapoi", "save": "Salvează", "cancel": "Anulează",
+    "done": "Gata", "loading": "Se încarcă…", "error": "Ceva a mers greșit. Încearcă din nou.",
+    "retry": "Încearcă din nou", "left": "Stâng", "right": "Drept", "optional": "opțional"
+  },
+  "onboarding": {
+    "stepOf": "Pasul {{step}} din {{total}}",
+    "welcome": {
+      "title": "CulinaryExpert",
+      "tagline": "Pregătire inteligentă pentru o viață sănătoasă",
+      "description": "Asistentul tău culinar cu IA pentru planificarea meselor fără risipă, nutriție precisă și gătit în loturi fără efort.",
+      "getStarted": "Începe",
+      "loginHint": "Ai deja un cont? Autentifică-te din Profil"
+    },
+    "unitSelection": {
+      "title": "Alege unitățile de măsură", "subtitle": "Poți schimba asta mai târziu din Setări.",
+      "metric": "Metric", "metricDesc": "kg, cm, litri",
+      "imperial": "Imperial", "imperialDesc": "lbs, inch, căni"
+    },
+    "disclaimer": {
+      "title": "Avertisment Medical", "subtitle": "Citește și acceptă înainte de a continua",
+      "warningTitle": "Notificare Importantă",
+      "p1": "CulinaryExpert este o aplicație de fitness și stil de viață concepută pentru a te ajuta să planifici mese nutritive și să îți monitorizezi indicatorii de sănătate.",
+      "p2": "Informațiile, calculele și recomandările furnizate de această aplicație sunt exclusiv în scopuri informative și educaționale și NU constituie sfaturi medicale, diagnostic sau tratament.",
+      "p3": "Consultați întotdeauna un furnizor de servicii medicale calificat înainte de a face modificări semnificative la dieta, rutina de exerciții sau planul de sănătate.",
+      "p4": "Dacă aveți sau suspectați o afecțiune medicală precum diabetul, boli de inimă sau tulburări alimentare, consultați un medic sau nutriționist autorizat înainte de a utiliza această aplicație.",
+      "p5": "Calculele de calorii, macronutrienți și compoziție corporală sunt estimări bazate pe medii ale populației și pot să nu fie precise pentru fiziologia dvs. individuală.",
+      "checkboxLabel": "Am citit și am înțeles Avertismentul Medical",
+      "acceptButton": "Accept — Continuă"
+    },
+    "biologicalData": {
+      "title": "Date biologice", "subtitle": "Folosite pentru calculul BMR și compoziției corporale.",
+      "sex": "Sex biologic", "male": "Masculin", "female": "Feminin",
+      "age": "Vârstă (ani)", "weight": "Greutate ({{unit}})", "height": "Înălțime ({{unit}})"
+    },
+    "measurements": {
+      "title": "Măsurători cu banda", "subtitle": "Pentru calculul grăsimii corporale (Formula Marinei SUA).",
+      "required": "Obligatoriu", "optional": "Opțional (pentru urmărirea progresului)", "bodySculpt": "Sculptură Corporală",
+      "waist": "Circumferința taliei", "neck": "Circumferința gâtului", "hips": "Circumferința șoldurilor",
+      "chest": "Circumferința pieptului", "arm": "Circumferința bicepsului",
+      "forearm": "Circumferința antebrațului", "thigh": "Circumferința coapsei",
+      "calf": "Circumferința gambei", "sideNote": "Măsoară o singură parte — valorile se aplică ambelor părți."
+    },
+    "lifestyle": {
+      "title": "Stil de viață", "activityLevel": "Nivel de activitate", "primaryGoal": "Obiectiv principal",
+      "budget": "Buget săptămânal pentru cumpărături ({{currency}}, opțional)", "budgetPlaceholder": "ex. 80",
+      "cookTime": "Timp maxim de gătit pe masă (minute)",
+      "allergies": "Alergii și intoleranțe",
+      "favoriteFoods": "Alimente preferate (separate prin virgulă)",
+      "favoriteFoodsPlaceholder": "ex. pui, quinoa, broccoli",
+      "buildPlan": "Creează Planul Meu", "settingUp": "Se configurează planul tău…"
+    },
+    "healthScore": {
+      "title": "Scorul Tău de Sănătate", "subtitle": "Calculat din datele biologice și stilul tău de viață.",
+      "dailyCalories": "Obiectiv Caloric Zilnic", "bodyFat": "Grăsime Corporală Estimată",
+      "description": "Planul tău personalizat de mese pe 7 zile a fost generat pe baza datelor tale.",
+      "viewPlan": "Vezi Planul Meu de Mese"
+    }
+  },
+  "nav": {
+    "today": "Azi", "mealPlan": "Plan de Mese", "prepHub": "Bucătărie",
+    "groceries": "Cumpărături", "profile": "Profil"
+  },
+  "activity": {
+    "sedentary": "Sedentar", "light": "Ușor", "moderate": "Moderat", "active": "Activ", "veryActive": "Foarte Activ",
+    "sedentaryDesc": "Muncă de birou, puțin exercițiu", "lightDesc": "1-3 zile/săptămână exerciții",
+    "moderateDesc": "3-5 zile/săptămână exerciții", "activeDesc": "6-7 zile/săptămână exerciții",
+    "veryActiveDesc": "Muncă fizică + exerciții zilnice"
+  },
+  "goal": {
+    "weightLoss": "Slăbire", "maintenance": "Menținere",
+    "hypertrophy": "Masă Musculară", "endurance": "Anduranță"
+  },
+  "allergens": {
+    "Gluten": "Gluten", "Milk": "Lapte", "Eggs": "Ouă", "Fish": "Pește",
+    "Shellfish": "Fructe de mare", "Tree Nuts": "Nuci", "Peanuts": "Arahide", "Soy": "Soia", "Sesame": "Susan"
+  },
+  "profile": {
+    "title": "Profil",
+    "personalInfo": "Informații Personale",
+    "age": "Vârstă", "height": "Înălțime", "sex": "Sex",
+    "goalLabel": "Obiectiv", "activityLevelLabel": "Nivel de Activitate",
+    "maxCookTimeLabel": "Timp Maxim de Gătit", "minutes": "minute",
+    "allergiesLabel": "Alergii", "favouriteFoodsLabel": "Alimente Preferate",
+    "currentMeasurements": "Măsurători Curente",
+    "weight": "Greutate", "bodyFat": "Grăsime Corporală", "waist": "Talie", "chest": "Piept",
+    "arm": "Braț", "thigh": "Coapsă", "calf": "Gambă", "bicep": "Biceps",
+    "score": "Scor",
+    "waistInput": "Talie", "chestInput": "Piept",
+    "bicepCirc": "Circumferința bicepsului", "thighCirc": "Circumferința coapsei", "calfCirc": "Circumferința gambei",
+    "logMeasurement": "+ Înregistrează Măsurătoare Nouă",
+    "progressCharts": "Grafice de Progres",
+    "languageTitle": "Limba Aplicației", "language": "Limbă",
+    "legal": "Legal",
+    "privacyPolicy": "Politica de Confidențialitate", "termsOfService": "Termeni și Condiții", "medicalDisclaimer": "Avertisment Medical",
+    "privacyP1": "CulinaryExpert colectează doar datele pe care le furnizezi în timpul înregistrării (metrici biologice, preferințe de stil de viață) și analize de utilizare anonime.",
+    "privacyP2": "Datele tale sunt stocate în siguranță și nu sunt vândute niciodată terților. Sunt utilizate exclusiv pentru generarea planurilor de mese personalizate și recomandărilor nutriționale.",
+    "privacyP3": "Poți șterge contul și toate datele asociate în orice moment contactând suportul.",
+    "privacyP4": "Folosim criptare standard industrială pentru datele în tranzit și în repaus.",
+    "termsP1": "Prin utilizarea CulinaryExpert ești de acord să o folosești exclusiv în scopuri personale, non-comerciale.",
+    "termsP2": "Aplicația oferă ghidare nutrițională bazată pe formule validate științific. Rezultatele sunt estimări și nu înlocuiesc sfaturile medicale sau dietetice profesionale.",
+    "termsP3": "Ești responsabil pentru exactitatea datelor introduse. Măsurătorile incorecte vor afecta calitatea recomandărilor.",
+    "termsP4": "Ne rezervăm dreptul de a actualiza acești termeni în orice moment. Utilizarea continuă a aplicației constituie acceptarea oricăror modificări.",
+    "signOut": "Deconectare", "signOutConfirm": "Deconectare", "signOutMessage": "Ești sigur că vrei să te deconectezi?"
+  },
+  "dashboard": {
+    "goodMorning": "Bună dimineața", "goodAfternoon": "Bună ziua", "goodEvening": "Bună seara",
+    "healthScore": "Scor de Sănătate", "kcalPerDay": "kcal/zi",
+    "todaysTargets": "Obiective de Azi",
+    "calories": "Calorii", "protein": "Proteine", "carbs": "Carbohidrați", "fat": "Grăsimi",
+    "todaysMeals": "Mesele de Azi", "seePlan": "Vezi planul →", "notPlanned": "Neplanificat",
+    "generateFirst": "Generează primul tău plan de mese",
+    "quickActions": "Acțiuni Rapide",
+    "lifestyleModes": "Moduri Stil de Viață",
+    "budgetModeLabel": "💰 Mod Buget", "budgetModeDesc": "Prioritizează ingrediente mai ieftine",
+    "fastLifeLabel": "⚡ Viață Rapidă (<15 min)", "fastLifeDesc": "Numai mese cu preparare rapidă",
+    "bodySculptLabel": "💪 Sculptare Corporală", "bodySculptDesc": "Proteine mari, optimizat pentru sală"
+  },
+  "mealPlan": {
+    "title": "Plan de Mese pe 7 Zile",
+    "loading": "Se încarcă planul tău de mese…",
+    "noMealPlan": "Niciun plan de mese încă",
+    "noMealPlanDesc": "Generează planul tău personalizat de mese pe 7 zile bazat pe obiectivele nutriționale, preferințe și timp de gătit.",
+    "generate": "✨  Generează Planul Meu pe 7 Zile",
+    "generating": "Se generează planul tău…",
+    "feature1": "Personalizat pe macronutrienții și obiectivele tale",
+    "feature2": "Respectă timpul tău maxim de gătit",
+    "feature3": "Evită alergenii și preferințele tale",
+    "feature4": "Generează automat lista de cumpărături",
+    "regenerate": "↺ Regenerează",
+    "regenerateTitle": "Regenerează Planul",
+    "regenerateMessage": "Aceasta va crea un nou plan pe 7 zile bazat pe feedback-ul tău. Continui?",
+    "regenerateConfirm": "Regenerează",
+    "noPlanToday": "Nu există mese planificate pentru această zi.",
+    "howWasIt": "Cum a fost?",
+    "lovedIt": "❤️ Mi-a plăcut",
+    "notAFan": "👎 Nu mi-a plăcut",
+    "noRecipe": "Nicio rețetă asignată",
+    "shopIngredients": "🛒  Cumpără Ingrediente pentru Acest Plan",
+    "breakfast": "Mic Dejun", "lunch": "Prânz", "dinner": "Cină", "snack": "Gustare",
+    "generationFailed": "Generare eșuată",
+    "generationError": "Nu se poate genera planul de mese. Verificați conexiunea."
+  },
+  "groceries": {
+    "wholeWeek": "Toată Săptămâna", "nextDay": "Ziua Următoare",
+    "itemsChecked": "{{checked}} / {{total}} articole bifate",
+    "loading": "Se construiește lista fără risipă…",
+    "produce": "Legume și Fructe", "proteins": "Proteine", "dairy": "Lactate",
+    "dryGoods": "Produse Uscate", "canned": "Conserve", "frozen": "Congelate",
+    "condiments": "Condimente", "bakery": "Panificație", "other": "Altele"
+  }
+}

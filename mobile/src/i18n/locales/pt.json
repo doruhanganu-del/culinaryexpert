@@ -1,0 +1,152 @@
+{
+  "common": {
+    "continue": "Continuar", "back": "Voltar", "save": "Guardar", "cancel": "Cancelar",
+    "done": "Feito", "loading": "A carregar…", "error": "Algo correu mal. Tente novamente.",
+    "retry": "Tentar novamente", "left": "Esquerdo", "right": "Direito", "optional": "opcional"
+  },
+  "onboarding": {
+    "stepOf": "Passo {{step}} de {{total}}",
+    "welcome": {
+      "title": "CulinaryExpert",
+      "tagline": "Preparação inteligente para uma vida saudável",
+      "description": "O seu assistente culinário com IA para planeamento de refeições sem desperdício, nutrição precisa e cozinha em lote sem esforço.",
+      "getStarted": "Começar",
+      "loginHint": "Já tem conta? Inicie sessão no Perfil"
+    },
+    "unitSelection": {
+      "title": "Escolha as suas unidades", "subtitle": "Pode alterar isto nas Definições.",
+      "metric": "Métrico", "metricDesc": "kg, cm, litros",
+      "imperial": "Imperial", "imperialDesc": "lbs, polegadas, chávenas"
+    },
+    "disclaimer": {
+      "title": "Aviso Médico", "subtitle": "Por favor, leia e aceite antes de continuar",
+      "warningTitle": "Aviso Importante",
+      "p1": "CulinaryExpert é uma aplicação de fitness e estilo de vida concebida para te ajudar a planear refeições nutritivas e acompanhar as tuas métricas de saúde.",
+      "p2": "As informações, cálculos e recomendações são apenas para fins informativos e NÃO constituem conselho médico.",
+      "p3": "Consulta sempre um profissional de saúde qualificado antes de fazer mudanças significativas na tua dieta.",
+      "p4": "Se tens uma condição médica, consulta um médico antes de usar esta aplicação.",
+      "p5": "Os cálculos de calorias e composição corporal são estimativas baseadas em médias populacionais.",
+      "checkboxLabel": "Li e compreendi o Aviso Médico", "acceptButton": "Aceito — Continuar"
+    },
+    "biologicalData": {
+      "title": "Dados biológicos", "subtitle": "Usados para calcular o seu BMR e composição corporal.",
+      "sex": "Sexo biológico", "male": "Masculino", "female": "Feminino",
+      "age": "Idade (anos)", "weight": "Peso ({{unit}})", "height": "Altura ({{unit}})"
+    },
+    "measurements": {
+      "title": "Medidas com fita", "subtitle": "Para o cálculo de gordura corporal (Fórmula Naval dos EUA).",
+      "required": "Obrigatório", "optional": "Opcional (para acompanhamento de progresso)", "bodySculpt": "Escultura Corporal",
+      "waist": "Circunferência da cintura", "neck": "Circunferência do pescoço", "hips": "Circunferência das ancas",
+      "chest": "Circunferência do peito", "arm": "Circunferência do bíceps",
+      "forearm": "Circunferência do antebraço", "thigh": "Circunferência da coxa",
+      "calf": "Circunferência da barriga da perna", "sideNote": "Mede apenas um lado — os valores aplicam-se a ambos os lados."
+    },
+    "lifestyle": {
+      "title": "Estilo de vida", "activityLevel": "Nível de atividade", "primaryGoal": "Objetivo principal",
+      "budget": "Orçamento semanal de compras ({{currency}}, opcional)", "budgetPlaceholder": "p. ex. 80",
+      "cookTime": "Tempo máximo de cozinha por refeição (minutos)",
+      "allergies": "Alergias e intolerâncias",
+      "favoriteFoods": "Alimentos favoritos (separados por vírgulas)",
+      "favoriteFoodsPlaceholder": "p. ex. frango, quinoa, brócolos",
+      "buildPlan": "Criar o Meu Plano", "settingUp": "A configurar o seu plano…"
+    },
+    "healthScore": {
+      "title": "A Sua Pontuação de Saúde", "subtitle": "Calculada a partir dos seus dados biológicos e estilo de vida.",
+      "dailyCalories": "Objetivo Calórico Diário", "bodyFat": "Gordura Corporal Estimada",
+      "description": "O seu plano de refeições personalizado de 7 dias foi gerado com base nos seus dados.",
+      "viewPlan": "Ver o Meu Plano de Refeições"
+    }
+  },
+  "nav": {
+    "today": "Hoje", "mealPlan": "Plano de Refeições", "prepHub": "Cozinha",
+    "groceries": "Compras", "profile": "Perfil"
+  },
+  "activity": {
+    "sedentary": "Sedentário", "light": "Leve", "moderate": "Moderado", "active": "Ativo", "veryActive": "Muito Ativo",
+    "sedentaryDesc": "Trabalho de escritório, pouco exercício", "lightDesc": "1-3 dias/semana de exercício",
+    "moderateDesc": "3-5 dias/semana de exercício", "activeDesc": "6-7 dias/semana de exercício",
+    "veryActiveDesc": "Trabalho físico + exercício diário"
+  },
+  "goal": {
+    "weightLoss": "Perder Peso", "maintenance": "Manter",
+    "hypertrophy": "Ganhar Músculo", "endurance": "Resistência"
+  },
+  "allergens": {
+    "Gluten": "Glúten", "Milk": "Leite", "Eggs": "Ovos", "Fish": "Peixe",
+    "Shellfish": "Marisco", "Tree Nuts": "Frutos Secos", "Peanuts": "Amendoins", "Soy": "Soja", "Sesame": "Sésamo"
+  },
+  "profile": {
+    "title": "Perfil",
+    "personalInfo": "Informações Pessoais",
+    "age": "Idade", "height": "Altura", "sex": "Sexo",
+    "goalLabel": "Objetivo", "activityLevelLabel": "Nível de Atividade",
+    "maxCookTimeLabel": "Tempo Máx. de Cozinha", "minutes": "minutos",
+    "allergiesLabel": "Alergias", "favouriteFoodsLabel": "Alimentos Favoritos",
+    "currentMeasurements": "Medidas Atuais",
+    "weight": "Peso", "bodyFat": "Gordura Corporal", "waist": "Cintura", "chest": "Peito",
+    "arm": "Braço", "thigh": "Coxa", "calf": "Barriga da Perna", "bicep": "Bíceps",
+    "score": "Pontuação",
+    "waistInput": "Circunferência da cintura", "chestInput": "Circunferência do peito",
+    "bicepCirc": "Circunferência do bíceps", "thighCirc": "Circunferência da coxa", "calfCirc": "Circunferência da barriga da perna",
+    "logMeasurement": "+ Registar Nova Medida",
+    "progressCharts": "Gráficos de Progresso",
+    "languageTitle": "Idioma da App", "language": "Idioma",
+    "legal": "Legal",
+    "privacyPolicy": "Política de Privacidade", "termsOfService": "Termos de Serviço", "medicalDisclaimer": "Aviso Médico",
+    "privacyP1": "CulinaryExpert recolhe apenas os dados fornecidos durante o registo e análises de utilização anónimas.",
+    "privacyP2": "Os seus dados são armazenados em segurança e nunca são vendidos a terceiros.",
+    "privacyP3": "Pode eliminar a sua conta em qualquer momento contactando o suporte.",
+    "privacyP4": "Utilizamos encriptação padrão da indústria para todos os dados.",
+    "termsP1": "Ao usar CulinaryExpert, concorda em usá-la exclusivamente para fins pessoais e não comerciais.",
+    "termsP2": "A aplicação fornece orientação nutricional baseada em fórmulas cientificamente validadas.",
+    "termsP3": "É responsável pela exatidão dos dados introduzidos.",
+    "termsP4": "Reservamo-nos o direito de atualizar estes termos em qualquer momento.",
+    "signOut": "Terminar Sessão", "signOutConfirm": "Terminar Sessão", "signOutMessage": "Tem a certeza que quer terminar a sessão?"
+  },
+  "dashboard": {
+    "goodMorning": "Bom dia", "goodAfternoon": "Boa tarde", "goodEvening": "Boa noite",
+    "healthScore": "Pontuação de Saúde", "kcalPerDay": "kcal/dia",
+    "todaysTargets": "Objetivos de Hoje",
+    "calories": "Calorias", "protein": "Proteínas", "carbs": "Hidratos de Carbono", "fat": "Gorduras",
+    "todaysMeals": "Refeições de Hoje", "seePlan": "Ver plano →", "notPlanned": "Não planeado",
+    "generateFirst": "Gera o teu primeiro plano de refeições",
+    "quickActions": "Ações Rápidas",
+    "lifestyleModes": "Modos de Estilo de Vida",
+    "budgetModeLabel": "💰 Modo Económico", "budgetModeDesc": "Privilegiar ingredientes mais baratos",
+    "fastLifeLabel": "⚡ Vida Rápida (<15 min)", "fastLifeDesc": "Apenas refeições de preparação rápida",
+    "bodySculptLabel": "💪 Escultura Corporal", "bodySculptDesc": "Rico em proteínas, otimizado para o ginásio"
+  },
+  "mealPlan": {
+    "title": "Plano de Refeições de 7 Dias",
+    "loading": "A carregar o seu plano de refeições…",
+    "noMealPlan": "Ainda sem plano de refeições",
+    "noMealPlanDesc": "Gera o teu plano personalizado de refeições de 7 dias baseado nos teus objetivos nutricionais, preferências e tempo de cozinha.",
+    "generate": "✨  Gerar o Meu Plano de 7 Dias",
+    "generating": "A gerar o teu plano…",
+    "feature1": "Personalizado nos teus macros e objetivos",
+    "feature2": "Respeita o teu tempo máximo de cozinha",
+    "feature3": "Evita os teus alergénios e aversões",
+    "feature4": "Gera automaticamente a tua lista de compras",
+    "regenerate": "↺ Regenerar",
+    "regenerateTitle": "Regenerar Plano",
+    "regenerateMessage": "Isto criará um novo plano de 7 dias com base no teu feedback. Continuar?",
+    "regenerateConfirm": "Regenerar",
+    "noPlanToday": "Nenhuma refeição planeada para este dia.",
+    "howWasIt": "Como foi?",
+    "lovedIt": "❤️ Adorei",
+    "notAFan": "👎 Não gostei",
+    "noRecipe": "Nenhuma receita atribuída",
+    "shopIngredients": "🛒  Comprar Ingredientes para Este Plano",
+    "breakfast": "Pequeno-almoço", "lunch": "Almoço", "dinner": "Jantar", "snack": "Lanche",
+    "generationFailed": "Falha na geração",
+    "generationError": "Não foi possível gerar o plano de refeições. Verifique a sua ligação."
+  },
+  "groceries": {
+    "wholeWeek": "Semana Completa", "nextDay": "Dia Seguinte",
+    "itemsChecked": "{{checked}} / {{total}} itens verificados",
+    "loading": "A construir a sua lista zero desperdício…",
+    "produce": "Frutas e Legumes", "proteins": "Proteínas", "dairy": "Lacticínios",
+    "dryGoods": "Produtos Secos", "canned": "Conservas", "frozen": "Congelados",
+    "condiments": "Condimentos", "bakery": "Padaria", "other": "Outros"
+  }
+}

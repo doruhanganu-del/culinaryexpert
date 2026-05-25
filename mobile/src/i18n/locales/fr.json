@@ -1,0 +1,152 @@
+{
+  "common": {
+    "continue": "Continuer", "back": "Retour", "save": "Enregistrer", "cancel": "Annuler",
+    "done": "Terminé", "loading": "Chargement…", "error": "Une erreur s'est produite. Veuillez réessayer.",
+    "retry": "Réessayer", "left": "Gauche", "right": "Droit", "optional": "facultatif"
+  },
+  "onboarding": {
+    "stepOf": "Étape {{step}} sur {{total}}",
+    "welcome": {
+      "title": "CulinaryExpert",
+      "tagline": "Préparation intelligente pour une vie saine",
+      "description": "Votre assistant culinaire IA pour une planification de repas zéro déchet, une nutrition précise et une cuisine en lot sans effort.",
+      "getStarted": "Commencer",
+      "loginHint": "Déjà un compte ? Connectez-vous depuis Profil"
+    },
+    "unitSelection": {
+      "title": "Choisissez vos unités", "subtitle": "Vous pourrez modifier cela dans Paramètres.",
+      "metric": "Métrique", "metricDesc": "kg, cm, litres",
+      "imperial": "Impérial", "imperialDesc": "lbs, pouces, tasses"
+    },
+    "disclaimer": {
+      "title": "Avertissement Médical", "subtitle": "Veuillez lire et accepter avant de continuer",
+      "warningTitle": "Avis Important",
+      "p1": "CulinaryExpert est une application de fitness et de style de vie conçue pour vous aider à planifier des repas nutritifs et à suivre vos indicateurs de santé.",
+      "p2": "Les informations, calculs et recommandations fournis sont uniquement à titre informatif et éducatif et ne constituent PAS un conseil médical, un diagnostic ou un traitement.",
+      "p3": "Consultez toujours un professionnel de santé qualifié avant d'apporter des changements significatifs à votre alimentation, votre routine d'exercice ou votre plan de santé.",
+      "p4": "Si vous avez ou suspectez une condition médicale telle que le diabète, les maladies cardiaques ou les troubles alimentaires, consultez un médecin avant d'utiliser cette application.",
+      "p5": "Les calculs de calories, de macros et de composition corporelle sont des estimations basées sur des moyennes de population et peuvent ne pas être précis pour votre physiologie individuelle.",
+      "checkboxLabel": "J'ai lu et compris l'Avertissement Médical", "acceptButton": "J'accepte — Continuer"
+    },
+    "biologicalData": {
+      "title": "Données biologiques", "subtitle": "Utilisées pour calculer votre BMR et votre composition corporelle.",
+      "sex": "Sexe biologique", "male": "Homme", "female": "Femme",
+      "age": "Âge (ans)", "weight": "Poids ({{unit}})", "height": "Taille ({{unit}})"
+    },
+    "measurements": {
+      "title": "Mesures au ruban", "subtitle": "Pour le calcul de la graisse corporelle (Formule Marine des États-Unis).",
+      "required": "Obligatoire", "optional": "Facultatif (pour le suivi des progrès)", "bodySculpt": "Sculpture Corporelle",
+      "waist": "Tour de taille", "neck": "Tour de cou", "hips": "Tour de hanches",
+      "chest": "Tour de poitrine", "arm": "Tour de biceps",
+      "forearm": "Tour d'avant-bras", "thigh": "Tour de cuisse",
+      "calf": "Tour de mollet", "sideNote": "Mesurez un seul côté — les valeurs s'appliquent aux deux côtés."
+    },
+    "lifestyle": {
+      "title": "Style de vie", "activityLevel": "Niveau d'activité", "primaryGoal": "Objectif principal",
+      "budget": "Budget courses hebdomadaire ({{currency}}, facultatif)", "budgetPlaceholder": "ex. 80",
+      "cookTime": "Temps de cuisson maximum par repas (minutes)",
+      "allergies": "Allergies et intolérances",
+      "favoriteFoods": "Aliments préférés (séparés par des virgules)",
+      "favoriteFoodsPlaceholder": "ex. poulet, quinoa, brocoli",
+      "buildPlan": "Créer Mon Plan", "settingUp": "Configuration de votre plan…"
+    },
+    "healthScore": {
+      "title": "Votre Score Santé", "subtitle": "Calculé à partir de vos données biologiques et de votre style de vie.",
+      "dailyCalories": "Objectif Calorique Journalier", "bodyFat": "Graisse Corporelle Estimée",
+      "description": "Votre plan repas personnalisé de 7 jours a été généré selon vos données.",
+      "viewPlan": "Voir Mon Plan Repas"
+    }
+  },
+  "nav": {
+    "today": "Aujourd'hui", "mealPlan": "Plan Repas", "prepHub": "Cuisine",
+    "groceries": "Courses", "profile": "Profil"
+  },
+  "activity": {
+    "sedentary": "Sédentaire", "light": "Léger", "moderate": "Modéré", "active": "Actif", "veryActive": "Très Actif",
+    "sedentaryDesc": "Travail de bureau, peu d'exercice", "lightDesc": "1-3 jours/semaine d'exercice",
+    "moderateDesc": "3-5 jours/semaine d'exercice", "activeDesc": "6-7 jours/semaine d'exercice",
+    "veryActiveDesc": "Travail physique + exercice quotidien"
+  },
+  "goal": {
+    "weightLoss": "Perdre du Poids", "maintenance": "Maintenir",
+    "hypertrophy": "Prendre du Muscle", "endurance": "Endurance"
+  },
+  "allergens": {
+    "Gluten": "Gluten", "Milk": "Lait", "Eggs": "Œufs", "Fish": "Poisson",
+    "Shellfish": "Fruits de Mer", "Tree Nuts": "Fruits à Coque", "Peanuts": "Cacahuètes", "Soy": "Soja", "Sesame": "Sésame"
+  },
+  "profile": {
+    "title": "Profil",
+    "personalInfo": "Informations Personnelles",
+    "age": "Âge", "height": "Taille", "sex": "Sexe",
+    "goalLabel": "Objectif", "activityLevelLabel": "Niveau d'Activité",
+    "maxCookTimeLabel": "Temps Max de Cuisson", "minutes": "minutes",
+    "allergiesLabel": "Allergies", "favouriteFoodsLabel": "Aliments Préférés",
+    "currentMeasurements": "Mesures Actuelles",
+    "weight": "Poids", "bodyFat": "Graisse Corporelle", "waist": "Taille", "chest": "Poitrine",
+    "arm": "Bras", "thigh": "Cuisse", "calf": "Mollet", "bicep": "Biceps",
+    "score": "Score",
+    "waistInput": "Tour de taille", "chestInput": "Tour de poitrine",
+    "bicepCirc": "Tour de biceps", "thighCirc": "Tour de cuisse", "calfCirc": "Tour de mollet",
+    "logMeasurement": "+ Enregistrer une Mesure",
+    "progressCharts": "Graphiques de Progrès",
+    "languageTitle": "Langue de l'Application", "language": "Langue",
+    "legal": "Mentions légales",
+    "privacyPolicy": "Politique de Confidentialité", "termsOfService": "Conditions d'Utilisation", "medicalDisclaimer": "Avertissement Médical",
+    "privacyP1": "CulinaryExpert collecte uniquement les données que vous fournissez lors de l'inscription (métriques biologiques, préférences de style de vie) et des analyses d'utilisation anonymes.",
+    "privacyP2": "Vos données sont stockées en toute sécurité et ne sont jamais vendues à des tiers. Elles sont utilisées uniquement pour générer des plans de repas personnalisés et des recommandations nutritionnelles.",
+    "privacyP3": "Vous pouvez supprimer votre compte et toutes les données associées à tout moment en contactant le support.",
+    "privacyP4": "Nous utilisons un chiffrement standard de l'industrie pour les données en transit et au repos.",
+    "termsP1": "En utilisant CulinaryExpert, vous acceptez de l'utiliser uniquement à des fins personnelles et non commerciales.",
+    "termsP2": "L'application fournit des conseils nutritionnels basés sur des formules scientifiquement validées. Les résultats sont des estimations et ne remplacent pas les conseils médicaux ou diététiques professionnels.",
+    "termsP3": "Vous êtes responsable de l'exactitude des données saisies. Des mesures incorrectes affecteront la qualité des recommandations.",
+    "termsP4": "Nous nous réservons le droit de mettre à jour ces conditions à tout moment. L'utilisation continue de l'application constitue l'acceptation de tout changement.",
+    "signOut": "Se Déconnecter", "signOutConfirm": "Se Déconnecter", "signOutMessage": "Êtes-vous sûr de vouloir vous déconnecter ?"
+  },
+  "dashboard": {
+    "goodMorning": "Bonjour", "goodAfternoon": "Bon après-midi", "goodEvening": "Bonsoir",
+    "healthScore": "Score Santé", "kcalPerDay": "kcal/jour",
+    "todaysTargets": "Objectifs d'Aujourd'hui",
+    "calories": "Calories", "protein": "Protéines", "carbs": "Glucides", "fat": "Lipides",
+    "todaysMeals": "Repas d'Aujourd'hui", "seePlan": "Voir le plan →", "notPlanned": "Non planifié",
+    "generateFirst": "Générez votre premier plan de repas",
+    "quickActions": "Actions Rapides",
+    "lifestyleModes": "Modes de Style de Vie",
+    "budgetModeLabel": "💰 Mode Économique", "budgetModeDesc": "Privilégier des ingrédients moins chers",
+    "fastLifeLabel": "⚡ Vie Rapide (<15 min)", "fastLifeDesc": "Repas rapides uniquement",
+    "bodySculptLabel": "💪 Sculpture Corporelle", "bodySculptDesc": "Riche en protéines, optimisé pour la salle de sport"
+  },
+  "mealPlan": {
+    "title": "Plan Repas 7 Jours",
+    "loading": "Chargement de votre plan repas…",
+    "noMealPlan": "Pas encore de plan repas",
+    "noMealPlanDesc": "Générez votre plan repas personnalisé de 7 jours basé sur vos objectifs nutritionnels, préférences et temps de cuisson.",
+    "generate": "✨  Générer Mon Plan 7 Jours",
+    "generating": "Génération de votre plan…",
+    "feature1": "Personnalisé selon vos macros et objectifs",
+    "feature2": "Respecte votre temps de cuisson maximum",
+    "feature3": "Évite vos allergènes et aversions",
+    "feature4": "Génère automatiquement votre liste de courses",
+    "regenerate": "↺ Régénérer",
+    "regenerateTitle": "Régénérer le Plan",
+    "regenerateMessage": "Cela créera un nouveau plan de 7 jours basé sur vos retours. Continuer ?",
+    "regenerateConfirm": "Régénérer",
+    "noPlanToday": "Aucun repas planifié pour ce jour.",
+    "howWasIt": "Comment c'était ?",
+    "lovedIt": "❤️ J'ai adoré",
+    "notAFan": "👎 Pas à mon goût",
+    "noRecipe": "Aucune recette assignée",
+    "shopIngredients": "🛒  Acheter les Ingrédients de Ce Plan",
+    "breakfast": "Petit-déjeuner", "lunch": "Déjeuner", "dinner": "Dîner", "snack": "Collation",
+    "generationFailed": "Échec de la génération",
+    "generationError": "Impossible de générer le plan repas. Vérifiez votre connexion."
+  },
+  "groceries": {
+    "wholeWeek": "Toute la Semaine", "nextDay": "Lendemain",
+    "itemsChecked": "{{checked}} / {{total}} articles cochés",
+    "loading": "Construction de votre liste zéro déchet…",
+    "produce": "Fruits et Légumes", "proteins": "Protéines", "dairy": "Produits Laitiers",
+    "dryGoods": "Épicerie Sèche", "canned": "Conserves", "frozen": "Surgelés",
+    "condiments": "Condiments", "bakery": "Boulangerie", "other": "Autres"
+  }
+}

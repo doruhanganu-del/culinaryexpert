@@ -4,7 +4,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -17,6 +16,8 @@ import BiologicalDataScreen    from '../screens/onboarding/BiologicalDataScreen'
 import MeasurementsScreen      from '../screens/onboarding/MeasurementsScreen';
 import LifestyleScreen         from '../screens/onboarding/LifestyleScreen';
 import HealthScoreScreen       from '../screens/onboarding/HealthScoreScreen';
+import AccountCreationScreen   from '../screens/onboarding/AccountCreationScreen';
+import LoginScreen             from '../screens/onboarding/LoginScreen';
 
 import DashboardScreen from '../screens/dashboard/DashboardScreen';
 import MealPlanScreen  from '../screens/mealplan/MealPlanScreen';
@@ -30,22 +31,20 @@ const Tab   = createBottomTabNavigator();
 const BRAND = '#1B4332';
 
 type TabConfig = {
-  filled: string;
-  outline: string;
   labelKey: 'nav.today' | 'nav.mealPlan' | 'nav.prepHub' | 'nav.groceries' | 'nav.profile';
 };
 
 const TAB_CONFIG: Record<string, TabConfig> = {
-  Dashboard: { filled: 'home',     outline: 'home-outline',     labelKey: 'nav.today'     },
-  MealPlan:  { filled: 'calendar', outline: 'calendar-outline', labelKey: 'nav.mealPlan'  },
-  SmartPrep: { filled: 'flame',    outline: 'flame-outline',    labelKey: 'nav.prepHub'   },
-  Groceries: { filled: 'cart',     outline: 'cart-outline',     labelKey: 'nav.groceries' },
-  Profile:   { filled: 'person',   outline: 'person-outline',   labelKey: 'nav.profile'   },
+  Dashboard: { labelKey: 'nav.today'     },
+  MealPlan:  { labelKey: 'nav.mealPlan'  },
+  SmartPrep: { labelKey: 'nav.prepHub'   },
+  Groceries: { labelKey: 'nav.groceries' },
+  Profile:   { labelKey: 'nav.profile'   },
 };
 
 function CustomTabBar({ state, navigation }: BottomTabBarProps) {
-  const { t }    = useTranslation();
-  const insets   = useSafeAreaInsets();
+  const { t }  = useTranslation();
+  const insets = useSafeAreaInsets();
 
   return (
     <View style={[styles.tabBar, { paddingBottom: Math.max(insets.bottom, 8) }]}>
@@ -54,18 +53,13 @@ function CustomTabBar({ state, navigation }: BottomTabBarProps) {
         const cfg     = TAB_CONFIG[route.name];
         if (!cfg) return null;
 
-        const label    = t(cfg.labelKey);
-        const iconName = (focused ? cfg.filled : cfg.outline) as any;
-
         const onPress = () => {
           const event = navigation.emit({
             type: 'tabPress',
             target: route.key,
             canPreventDefault: true,
           });
-          if (!focused && !event.defaultPrevented) {
-            navigation.navigate(route.name);
-          }
+          if (!focused && !event.defaultPrevented) navigation.navigate(route.name);
         };
 
         return (
@@ -76,21 +70,12 @@ function CustomTabBar({ state, navigation }: BottomTabBarProps) {
             style={styles.tabItem}
             accessibilityRole="button"
             accessibilityState={focused ? { selected: true } : {}}
-            accessibilityLabel={label}
+            accessibilityLabel={t(cfg.labelKey)}
           >
-            <View style={[styles.iconPill, focused && styles.iconPillActive]}>
-              <Ionicons
-                name={iconName}
-                size={26}
-                color={focused ? '#fff' : '#9CA3AF'}
-              />
-            </View>
-            <Text
-              style={[styles.tabLabel, focused && styles.tabLabelActive]}
-              numberOfLines={2}
-            >
-              {label}
+            <Text style={[styles.tabLabel, focused && styles.tabLabelActive]} numberOfLines={2}>
+              {t(cfg.labelKey)}
             </Text>
+            {focused && <View style={styles.activeIndicator} />}
           </TouchableOpacity>
         );
       })}
@@ -123,6 +108,8 @@ function OnboardingStack() {
       <Stack.Screen name="Measurements"      component={MeasurementsScreen} />
       <Stack.Screen name="Lifestyle"         component={LifestyleScreen} />
       <Stack.Screen name="HealthScore"       component={HealthScoreScreen} />
+      <Stack.Screen name="AccountCreation"   component={AccountCreationScreen} />
+      <Stack.Screen name="Login"             component={LoginScreen} />
     </Stack.Navigator>
   );
 }
@@ -133,10 +120,11 @@ export default function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!isOnboarded ? (
+        {isOnboarded ? (
+          <Stack.Screen name="Main" component={MainTabs} />
+        ) : (
           <Stack.Screen name="Onboarding" component={OnboardingStack} />
-        ) : null}
-        <Stack.Screen name="Main" component={MainTabs} />
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -144,51 +132,43 @@ export default function AppNavigator() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    flexDirection:    'row',
-    backgroundColor:  '#fff',
-    paddingTop:       10,
+    flexDirection:     'row',
+    backgroundColor:   '#fff',
+    paddingTop:        8,
     paddingHorizontal: 4,
-    borderTopWidth:   1,
-    borderTopColor:   '#F0F2F5',
-    elevation:        20,
-    shadowColor:      '#000',
-    shadowOffset:     { width: 0, height: -4 },
-    shadowOpacity:    0.09,
-    shadowRadius:     16,
+    borderTopWidth:    1,
+    borderTopColor:    '#F0F2F5',
+    elevation:         20,
+    shadowColor:       '#000',
+    shadowOffset:      { width: 0, height: -4 },
+    shadowOpacity:     0.06,
+    shadowRadius:      12,
   },
   tabItem: {
     flex:           1,
     alignItems:     'center',
     justifyContent: 'center',
     paddingHorizontal: 2,
-    gap:            4,
-  },
-  iconPill: {
-    width:          56,
-    height:         40,
-    borderRadius:   20,
-    alignItems:     'center',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-  },
-  iconPillActive: {
-    backgroundColor: BRAND,
-    shadowColor:     BRAND,
-    shadowOffset:    { width: 0, height: 4 },
-    shadowOpacity:   0.35,
-    shadowRadius:    10,
-    elevation:       8,
+    paddingBottom:  4,
+    gap:            3,
+    minHeight:      44,
   },
   tabLabel: {
-    fontSize:    13,
-    fontWeight:  '600',
-    color:       '#9CA3AF',
-    textAlign:   'center',
-    lineHeight:  16,
-    maxWidth:    72,
+    fontSize:   12,
+    fontWeight: '600',
+    color:      '#9CA3AF',
+    textAlign:  'center',
+    lineHeight: 16,
   },
   tabLabelActive: {
     color:      BRAND,
     fontWeight: '800',
+    fontSize:   13,
+  },
+  activeIndicator: {
+    width:           24,
+    height:          3,
+    borderRadius:    2,
+    backgroundColor: BRAND,
   },
 });

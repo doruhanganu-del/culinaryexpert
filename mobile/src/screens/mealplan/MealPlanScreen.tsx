@@ -31,7 +31,7 @@ export default function MealPlanScreen() {
 
   useEffect(() => {
     mealPlanApi.getActive()
-      .then(data => { setMeals(data); setLoading(false); })
+      .then(data => { setMeals(Array.isArray(data) ? data : []); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
 
@@ -53,7 +53,7 @@ export default function MealPlanScreen() {
       const { plan_id } = await mealPlanApi.generate(monday);
       storage.set(StorageKeys.ACTIVE_PLAN_ID, plan_id);
       const fresh = await mealPlanApi.getActive();
-      setMeals(fresh);
+      setMeals(Array.isArray(fresh) ? fresh : []);
     } catch (e: any) {
       Alert.alert(t('mealPlan.generationFailed'), e.message ?? t('mealPlan.generationError'));
     } finally {

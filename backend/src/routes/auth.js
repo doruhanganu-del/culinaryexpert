@@ -22,10 +22,9 @@ router.post('/register', asyncHandler(async (req, res) => {
 router.post('/login', asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  // Use a user-scoped client for sign-in
   const { createClient } = require('@supabase/supabase-js');
-  const userClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
-  const { data, error } = await userClient.auth.signInWithPassword({ email, password });
+  const anonClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+  const { data, error } = await anonClient.auth.signInWithPassword({ email, password });
 
   if (error) return res.status(401).json({ error: 'Invalid credentials' });
 
@@ -40,8 +39,8 @@ router.post('/login', asyncHandler(async (req, res) => {
 router.post('/refresh', asyncHandler(async (req, res) => {
   const { refresh_token } = req.body;
   const { createClient } = require('@supabase/supabase-js');
-  const client = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
-  const { data, error } = await client.auth.refreshSession({ refresh_token });
+  const anonClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+  const { data, error } = await anonClient.auth.refreshSession({ refresh_token });
   if (error) return res.status(401).json({ error: error.message });
   res.json({ access_token: data.session.access_token, expires_at: data.session.expires_at });
 }));

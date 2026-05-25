@@ -1,4 +1,5 @@
 import { getToken, setTokens, clearTokens, getString, StorageKeys } from '../store/storage';
+import { supabase } from '../lib/supabase';
 
 const BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000';
 
@@ -8,28 +9,33 @@ async function request<T>(
   body?: unknown,
 ): Promise<T> {
   const token = getToken();
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-  const res = await fetch(`${BASE_URL}${path}`, {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE_URL}${path}`, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: body ? JSON.stringify(body) : undefined,
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   if (res.status === 401) {
-    // Attempt token refresh
-    const refreshToken = getString(StorageKeys.REFRESH_TOKEN);
-    if (refreshToken) {
-      const refreshRes = await fetch(`${BASE_URL}/api/auth/refresh`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refresh_token: refreshToken }),
+    // Refresh directly via Supabase — no backend dependency
+    const storedRefresh = getString(StorageKeys.REFRESH_TOKEN);
+    if (storedRefresh) {
+      const { data: refreshData, error: refreshErr } = await supabase.auth.refreshSession({
+        refresh_token: storedRefresh,
       });
-      if (refreshRes.ok) {
-        const { access_token } = await refreshRes.json();
-        setTokens(access_token, refreshToken);
+      if (!refreshErr && refreshData.session) {
+        setTokens(refreshData.session.access_token, refreshData.session.refresh_token);
         return request(method, path, body);
       }
     }

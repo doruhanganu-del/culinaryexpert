@@ -102,14 +102,20 @@ async function generateWeeklyMealPlan(userId, preferences, macroTargets) {
 }
 
 async function fetchUserFeedback(userId) {
+  // Fetch plan IDs first — passing a query builder directly to .in() is not supported
+  const { data: plans } = await supabase
+    .from('meal_plans')
+    .select('id')
+    .eq('user_id', userId);
+
+  const planIds = (plans || []).map(p => p.id);
+  if (planIds.length === 0) return {};
+
   const { data } = await supabase
     .from('meal_plan_meals')
     .select('recipe_id, feedback')
-    .eq('feedback', 'disliked')
     .not('feedback', 'is', null)
-    .in('meal_plan_id',
-      supabase.from('meal_plans').select('id').eq('user_id', userId)
-    );
+    .in('meal_plan_id', planIds);
 
   const map = {};
   (data || []).forEach(row => {

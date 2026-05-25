@@ -95,9 +95,9 @@ export default function HealthScoreScreen({ navigation }: Props) {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.getParent()?.navigate('Main')}
+        onPress={() => navigation.navigate('AccountCreation')}
       >
-        <Text style={styles.buttonText}>{t('onboarding.healthScore.viewPlan')}</Text>
+        <Text style={styles.buttonText}>{t('onboarding.healthScore.createAccount')}</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

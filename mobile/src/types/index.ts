@@ -205,6 +205,8 @@ export type OnboardingStackParamList = {
   Measurements: undefined;
   Lifestyle: undefined;
   HealthScore: undefined;
+  AccountCreation: undefined;
+  Login: undefined;
 };
 
 export type MainTabParamList = {

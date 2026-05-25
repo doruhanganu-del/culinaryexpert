@@ -66,7 +66,9 @@ export default function WelcomeScreen({ navigation }: Props) {
           >
             <Text style={styles.primaryButtonText}>{t('onboarding.welcome.getStarted')}</Text>
           </TouchableOpacity>
-          <Text style={styles.loginHint}>{t('onboarding.welcome.loginHint')}</Text>
+          <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Login')}>
+            <Text style={styles.loginHint}>{t('onboarding.welcome.loginHint')}</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
 
@@ -127,7 +129,8 @@ const styles = StyleSheet.create({
   actions:           { paddingHorizontal: 32, paddingBottom: 48 },
   primaryButton:     { backgroundColor: '#fff', borderRadius: 16, paddingVertical: 16, alignItems: 'center' },
   primaryButtonText: { color: '#1B4332', fontSize: 17, fontWeight: '700' },
-  loginHint:         { color: '#B7E4C7', textAlign: 'center', marginTop: 16, fontSize: 14 },
+  loginButton:       { marginTop: 16, paddingVertical: 10, paddingHorizontal: 20, borderRadius: 12, borderWidth: 1.5, borderColor: 'rgba(255,255,255,0.45)', alignSelf: 'center' },
+  loginHint:         { color: '#fff', textAlign: 'center', fontSize: 16, fontWeight: '600' },
   // Modal
   overlay:           { flex: 1, backgroundColor: 'rgba(0,0,0,0.55)', justifyContent: 'flex-end' },
   sheet:             { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingTop: 12, paddingBottom: 40, maxHeight: '72%' },

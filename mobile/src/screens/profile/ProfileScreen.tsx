@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet, TextInput, Alert,
   Dimensions, Modal, FlatList, Linking,
@@ -6,7 +6,9 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { VictoryChart, VictoryLine, VictoryAxis, VictoryTheme } from 'victory-native';
-import { userApi } from '../../api/endpoints';
+import { useMeasurements, useSaveMeasurement } from '../../hooks/useMeasurements';
+import { useHealthScores } from '../../hooks/useHealthScores';
+import { calcBodyFatNavy } from '../../utils/healthCalc';
 import { storage, StorageKeys } from '../../store/storage';
 import { useAuth } from '../../store/authContext';
 import { displayWeight, displayMeasurement } from '../../utils/unitConversions';
@@ -42,38 +44,33 @@ const GOAL_ICONS: Record<Goal, string> = {
 export default function ProfileScreen() {
   const { t, i18n } = useTranslation();
   const { signOut } = useAuth();
-  const [measurements,  setMeasurements]  = useState<Measurement[]>([]);
-  const [healthScores,  setHealthScores]  = useState<HealthScore[]>([]);
-  const [unitSystem,    setUnitSystem]    = useState<UnitSystem>('metric');
+  const { data: measurements = [], isLoading } = useMeasurements();
+  const { data: healthScores  = [] }           = useHealthScores();
+  const { mutateAsync: saveMeasurement }        = useSaveMeasurement();
+
+  const [unitSystem,    setUnitSystem]    = useState<UnitSystem>(
+    (storage.getString(StorageKeys.UNIT_SYSTEM) ?? 'metric') as UnitSystem
+  );
   const [activeChart,   setActiveChart]   = useState<ChartTab>('weight');
   const [addingMeasure, setAddingMeasure] = useState(false);
-  const [loading,       setLoading]       = useState(true);
   const [showLangPicker, setShowLangPicker] = useState(false);
   const [legalType, setLegalType] = useState<'privacy' | 'terms' | 'medical' | null>(null);
 
-  const [fWeight, setFWeight] = useState('');
-  const [fWaist,  setFWaist]  = useState('');
-  const [fChest,  setFChest]  = useState('');
-  const [fArm,    setFArm]    = useState('');
-  const [fThigh,  setFThigh]  = useState('');
-  const [fCalf,   setFCalf]   = useState('');
+  const [fWeight,    setFWeight]    = useState('');
+  const [fNeck,      setFNeck]      = useState('');
+  const [fWaist,     setFWaist]     = useState('');
+  const [fHips,      setFHips]      = useState('');
+  const [fHipsLower, setFHipsLower] = useState('');
+  const [fChest,     setFChest]     = useState('');
+  const [fArm,       setFArm]       = useState('');
+  const [fForearm,   setFForearm]   = useState('');
+  const [fThigh,     setFThigh]     = useState('');
+  const [fCalf,      setFCalf]      = useState('');
 
   const bioStr       = storage.getString('onboarding_bio');
   const lifestyleStr = storage.getString('onboarding_lifestyle');
   const bio          = bioStr       ? JSON.parse(bioStr)       : {} as any;
   const lifestyle    = lifestyleStr ? JSON.parse(lifestyleStr) : {} as any;
-
-  const loadData = useCallback(async () => {
-    try {
-      const [m, h] = await Promise.all([userApi.getMeasurements(), userApi.getHealthScores()]);
-      setMeasurements(m);
-      setHealthScores(h);
-      setUnitSystem((storage.getString(StorageKeys.UNIT_SYSTEM) ?? 'metric') as UnitSystem);
-    } catch {}
-    setLoading(false);
-  }, []);
-
-  useEffect(() => { loadData(); }, [loadData]);
 
   const latestM = measurements[measurements.length - 1];
   const lUnit   = unitSystem === 'imperial' ? 'in' : 'cm';
@@ -105,19 +102,41 @@ export default function ProfileScreen() {
   const handleSaveMeasurement = async () => {
     if (!fWeight && !fWaist) return;
     try {
-      await userApi.upsertProfile({
-        unit_system: unitSystem,
-        ...(fWeight && { weight:      parseFloat(fWeight) }),
-        ...(fWaist  && { waist:       parseFloat(fWaist) }),
-        ...(fChest  && { chest:       parseFloat(fChest) }),
-        ...(fArm    && { arm_left:    parseFloat(fArm),   arm_right:   parseFloat(fArm) }),
-        ...(fThigh  && { thigh_left:  parseFloat(fThigh), thigh_right: parseFloat(fThigh) }),
-        ...(fCalf   && { calf_left:   parseFloat(fCalf),  calf_right:  parseFloat(fCalf) }),
+      const imp  = unitSystem === 'imperial';
+      const toKg = (v: string) => v ? (imp ? parseFloat(v) * 0.453592 : parseFloat(v)) : null;
+      const toCm = (v: string) => v ? (imp ? parseFloat(v) * 2.54     : parseFloat(v)) : null;
+      const r1   = (v: number | null) => v != null ? parseFloat(v.toFixed(1)) : null;
+
+      const neckCm   = toCm(fNeck)  ?? latestM?.neck_cm  ?? null;
+      const waistCm  = toCm(fWaist) ?? latestM?.waist_cm ?? null;
+      const hipsCm   = toCm(fHips)  ?? latestM?.hips_cm  ?? null;
+      const heightCm = latestM?.height_cm ?? null;
+      const sex      = bio.sex as 'male' | 'female' | undefined;
+      const bodyFatPct = (sex && heightCm)
+        ? calcBodyFatNavy(sex, waistCm, neckCm, heightCm, hipsCm)
+        : null;
+
+      await saveMeasurement({
+        weight_kg:        toKg(fWeight),
+        height_cm:        heightCm,
+        neck_cm:          r1(toCm(fNeck)),
+        waist_cm:         r1(waistCm),
+        hips_cm:          r1(hipsCm),
+        chest_cm:         r1(toCm(fChest)),
+        arm_left_cm:      r1(toCm(fArm)),
+        arm_right_cm:     r1(toCm(fArm)),
+        forearm_left_cm:  r1(toCm(fForearm)),
+        forearm_right_cm: r1(toCm(fForearm)),
+        thigh_left_cm:    r1(toCm(fThigh)),
+        thigh_right_cm:   r1(toCm(fThigh)),
+        calf_left_cm:     r1(toCm(fCalf)),
+        calf_right_cm:    r1(toCm(fCalf)),
+        body_fat_pct:     bodyFatPct,
+        is_synced:        true,
       });
-      setFWeight(''); setFWaist(''); setFChest('');
-      setFArm(''); setFThigh(''); setFCalf('');
+      setFWeight(''); setFNeck(''); setFWaist(''); setFHips(''); setFHipsLower('');
+      setFChest(''); setFArm(''); setFForearm(''); setFThigh(''); setFCalf('');
       setAddingMeasure(false);
-      loadData();
     } catch (e: any) {
       Alert.alert('Error', e.message);
     }
@@ -144,7 +163,7 @@ export default function ProfileScreen() {
   const currentLocale = i18n.language;
   const currentLang   = LANGUAGES.find(l => l.locale === currentLocale) ?? LANGUAGES[0];
 
-  if (loading) {
+  if (isLoading && measurements.length === 0) {
     return <SafeAreaView style={styles.container}><Text style={styles.loading}>{t('common.loading')}</Text></SafeAreaView>;
   }
 
@@ -301,12 +320,16 @@ export default function ProfileScreen() {
         {addingMeasure && (
           <View style={styles.addForm}>
             {[
-              { label: `${t('profile.weight')} (${wUnit})`,        value: fWeight, set: setFWeight },
-              { label: `${t('profile.waistInput')} (${lUnit})`,    value: fWaist,  set: setFWaist  },
-              { label: `${t('profile.chestInput')} (${lUnit})`,    value: fChest,  set: setFChest  },
-              { label: `${t('profile.bicepCirc')} (${lUnit})`,     value: fArm,    set: setFArm    },
-              { label: `${t('profile.thighCirc')} (${lUnit})`,     value: fThigh,  set: setFThigh  },
-              { label: `${t('profile.calfCirc')} (${lUnit})`,      value: fCalf,   set: setFCalf   },
+              { label: `${t('profile.weight')} (${wUnit})`,                                      value: fWeight,    set: setFWeight    },
+              { label: `${t('onboarding.measurements.neck')} (${lUnit})`,                        value: fNeck,      set: setFNeck      },
+              { label: `${t('onboarding.measurements.waist')} (${lUnit})`,                       value: fWaist,     set: setFWaist     },
+              { label: `${t('onboarding.measurements.hips')} (${lUnit})`,                        value: fHips,      set: setFHips      },
+              { label: `${t('onboarding.measurements.hipsLower')} (${lUnit})`,                   value: fHipsLower, set: setFHipsLower },
+              { label: `${t('onboarding.measurements.chest')} (${lUnit})`,                       value: fChest,     set: setFChest     },
+              { label: `${t('profile.bicepCirc')} (${lUnit})`,                                   value: fArm,       set: setFArm       },
+              { label: `${t('onboarding.measurements.forearm')} (${lUnit})`,                     value: fForearm,   set: setFForearm   },
+              { label: `${t('profile.thighCirc')} (${lUnit})`,                                   value: fThigh,     set: setFThigh     },
+              { label: `${t('profile.calfCirc')} (${lUnit})`,                                    value: fCalf,      set: setFCalf      },
             ].map(({ label, value, set }) => (
               <TextInput
                 key={label}

@@ -3,10 +3,8 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput } from 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { OnboardingStackParamList, ActivityLevel, Goal, UnitSystem } from '../../types';
-import { userApi, authApi } from '../../api/endpoints';
-import { storage, StorageKeys, setTokens, setItem } from '../../store/storage';
-import { useAuth } from '../../store/authContext';
+import type { OnboardingStackParamList, ActivityLevel, Goal } from '../../types';
+import { storage, StorageKeys } from '../../store/storage';
 
 type Props = { navigation: NativeStackNavigationProp<OnboardingStackParamList, 'Lifestyle'> };
 
@@ -29,11 +27,8 @@ const activityKey = (v: ActivityLevel) =>
 const goalKey = (v: Goal) =>
   ({ weight_loss: 'weightLoss', maintenance: 'maintenance', hypertrophy: 'hypertrophy', endurance: 'endurance' } as const)[v];
 
-const num = (v: string | undefined) => (v ? parseFloat(v) : undefined);
-
 export default function LifestyleScreen({ navigation }: Props) {
   const { t, i18n } = useTranslation();
-  const { completeOnboarding } = useAuth();
   const [activity, setActivity]   = useState<ActivityLevel>('moderate');
   const [goal,     setGoal]       = useState<Goal>('maintenance');
   const [budget,   setBudget]     = useState('');
@@ -46,72 +41,9 @@ export default function LifestyleScreen({ navigation }: Props) {
   const toggleAllergen = (a: string) =>
     setAllergens(prev => prev.includes(a) ? prev.filter(x => x !== a) : [...prev, a]);
 
-  const autoRegister = async () => {
-    const storedStr = storage.getString('user_auto_creds');
-    let email: string, password: string;
-    if (storedStr) {
-      const c = JSON.parse(storedStr);
-      email = c.email; password = c.password;
-    } else {
-      const rand = Math.random().toString(36).slice(2, 12);
-      email    = `app_${rand}@culinaryexpert.local`;
-      password = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
-      storage.set('user_auto_creds', JSON.stringify({ email, password }));
-    }
-    try {
-      const r = await authApi.login(email, password);
-      setTokens(r.access_token, r.refresh_token);
-      setItem(StorageKeys.USER_ID, r.user_id);
-    } catch {
-      try {
-        await authApi.register(email, password);
-        const r = await authApi.login(email, password);
-        setTokens(r.access_token, r.refresh_token);
-        setItem(StorageKeys.USER_ID, r.user_id);
-      } catch (e) { console.log('[AutoAuth]', e); }
-    }
-  };
-
   const handleFinish = () => {
-    storage.set('onboarding_lifestyle', JSON.stringify({ activity, goal, cookTime, allergens, favFoods }));
-    completeOnboarding();
+    storage.set('onboarding_lifestyle', JSON.stringify({ activity, goal, cookTime, budget, allergens, favFoods }));
     navigation.navigate('HealthScore');
-
-    // Fire-and-forget: auto-register then sync profile
-    const unitSystem = (storage.getString(StorageKeys.UNIT_SYSTEM) ?? 'metric') as UnitSystem;
-    const bioStr  = storage.getString('onboarding_bio');
-    const measStr = storage.getString('onboarding_measurements');
-    const bio     = bioStr  ? JSON.parse(bioStr)  : {};
-    const meas    = measStr ? JSON.parse(measStr) : {};
-    const birthYear = new Date().getFullYear() - (parseInt(bio.age) || 25);
-
-    autoRegister().then(() =>
-      userApi.upsertProfile({
-        unit_system:              unitSystem,
-        sex:                      bio.sex,
-        birth_date:               `${birthYear}-01-01`,
-        weight:                   parseFloat(bio.weight),
-        height:                   parseFloat(bio.height),
-        waist:                    num(meas.waist),
-        neck:                     num(meas.neck),
-        hips:                     num(meas.hips),
-        chest:                    num(meas.chest),
-        arm_left:                 num(meas.arm),
-        arm_right:                num(meas.arm),
-        forearm_left:             num(meas.forearm),
-        forearm_right:            num(meas.forearm),
-        thigh_left:               num(meas.thigh),
-        thigh_right:              num(meas.thigh),
-        calf_left:                num(meas.calf),
-        calf_right:               num(meas.calf),
-        activity_level:           activity,
-        goal,
-        grocery_budget_weekly:    budget ? parseFloat(budget) : null,
-        max_cooking_time_minutes: parseInt(cookTime) || 45,
-        allergies:                allergens.map(a => a.toLowerCase()),
-        favorite_foods:           favFoods.split(',').map(f => f.trim().toLowerCase()).filter(Boolean),
-      })
-    ).catch(e => console.error('[Profile upsert]', e));
   };
 
   return (

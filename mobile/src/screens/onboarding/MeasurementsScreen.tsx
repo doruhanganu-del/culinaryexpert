@@ -10,13 +10,13 @@ import { lengthUnitLabel } from '../../utils/unitConversions';
 type Props = { navigation: NativeStackNavigationProp<OnboardingStackParamList, 'Measurements'> };
 
 type MeasurementFields = {
-  waist: string; neck: string; hips: string;
+  waist: string; neck: string; hips: string; hipsLower: string;
   chest: string; arm: string; forearm: string;
   thigh: string; calf: string;
 };
 
 const EMPTY: MeasurementFields = {
-  waist: '', neck: '', hips: '',
+  waist: '', neck: '', hips: '', hipsLower: '',
   chest: '', arm: '', forearm: '',
   thigh: '', calf: '',
 };
@@ -32,9 +32,8 @@ export default function MeasurementsScreen({ navigation }: Props) {
 
   const isFemale = bio.sex === 'female';
 
-  // All fields required: waist, neck, hips (female), chest, arm, forearm, thigh, calf
   const required =
-    m.waist && m.neck &&
+    m.waist && m.neck && m.hipsLower &&
     (!isFemale || m.hips) &&
     m.chest && m.arm && m.forearm && m.thigh && m.calf;
 
@@ -70,10 +69,11 @@ export default function MeasurementsScreen({ navigation }: Props) {
         {/* Body fat formula fields */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('onboarding.measurements.required')}</Text>
-          {field('waist',  t('onboarding.measurements.waist'), '82.0')}
-          {field('neck',   t('onboarding.measurements.neck'),  '38.0')}
+          {field('waist',     t('onboarding.measurements.waist'),     '82.0')}
+          {field('neck',      t('onboarding.measurements.neck'),      '38.0')}
           {isFemale && field('hips', t('onboarding.measurements.hips'), '96.0')}
-          {field('chest',  t('onboarding.measurements.chest'), '95.0')}
+          {field('hipsLower', t('onboarding.measurements.hipsLower'), '98.0')}
+          {field('chest',     t('onboarding.measurements.chest'),     '95.0')}
         </View>
 
         {/* Sculpt / lean mass fields */}

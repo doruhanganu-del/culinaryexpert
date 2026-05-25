@@ -105,13 +105,28 @@ async function submitFeedback(req, res) {
     return res.status(400).json({ error: 'feedback must be "loved" or "disliked"' });
   }
 
+  // Verify the meal belongs to the authenticated user via a separate lookup
+  const { data: mealRow } = await supabase
+    .from('meal_plan_meals')
+    .select('meal_plan_id')
+    .eq('id', meal_id)
+    .single();
+
+  if (!mealRow) return res.status(404).json({ error: 'Meal not found' });
+
+  const { data: planRow } = await supabase
+    .from('meal_plans')
+    .select('id')
+    .eq('id', mealRow.meal_plan_id)
+    .eq('user_id', req.userId)
+    .single();
+
+  if (!planRow) return res.status(403).json({ error: 'Forbidden' });
+
   const { error } = await supabase
     .from('meal_plan_meals')
     .update({ feedback, feedback_at: new Date().toISOString() })
-    .eq('id', meal_id)
-    .in('meal_plan_id',
-      supabase.from('meal_plans').select('id').eq('user_id', req.userId)
-    );
+    .eq('id', meal_id);
 
   if (error) return res.status(400).json({ error: error.message });
   res.json({ success: true });

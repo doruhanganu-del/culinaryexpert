@@ -1,51 +1,39 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { mmkv } from './mmkv';
 
 export const StorageKeys = {
-  ACCESS_TOKEN:    'access_token',
-  REFRESH_TOKEN:   'refresh_token',
-  USER_ID:         'user_id',
-  UNIT_SYSTEM:     'unit_system',
-  ONBOARDING_DONE: 'onboarding_done',
-  LAST_SYNCED_AT:  'last_synced_at',
-  ACTIVE_PLAN_ID:  'active_plan_id',
+  ACCESS_TOKEN:     'access_token',
+  REFRESH_TOKEN:    'refresh_token',
+  USER_ID:          'user_id',
+  UNIT_SYSTEM:      'unit_system',
+  ONBOARDING_DONE:  'onboarding_done',
+  LAST_SYNCED_AT:   'last_synced_at',
+  ACTIVE_PLAN_ID:   'active_plan_id',
+  TRIAL_START_DATE: 'trial_start_date',
+  TRIAL_NOTIFIED:   'trial_notified',
 } as const;
 
-// Synchronous in-memory cache so navigation and renders don't need async reads
-const cache: Record<string, string | undefined> = {};
-
-export async function initStorage(): Promise<void> {
-  const keys = Object.values(StorageKeys);
-  const pairs = await AsyncStorage.multiGet(keys);
-  pairs.forEach(([k, v]) => { if (v != null) cache[k] = v; });
-}
-
-// --- Sync helpers (read from cache, write through to AsyncStorage) ---
+// No-op: MMKV reads are synchronous — no warm-up needed
+export async function initStorage(): Promise<void> {}
 
 export function getString(key: string): string | undefined {
-  return cache[key];
+  return mmkv.getString(key);
 }
 
 export function getBoolean(key: string): boolean | undefined {
-  const v = cache[key];
-  if (v == null) return undefined;
-  return v === 'true';
+  return mmkv.contains(key) ? mmkv.getBoolean(key) : undefined;
 }
 
 export function setItem(key: string, value: string): void {
-  cache[key] = value;
-  AsyncStorage.setItem(key, value);
+  mmkv.set(key, value);
 }
 
 export function setBooleanItem(key: string, value: boolean): void {
-  setItem(key, String(value));
+  mmkv.set(key, value);
 }
 
 export function deleteItem(key: string): void {
-  delete cache[key];
-  AsyncStorage.removeItem(key);
+  mmkv.delete(key);
 }
-
-// --- Named helpers used across the app ---
 
 export function getToken(): string | undefined {
   return getString(StorageKeys.ACCESS_TOKEN);
@@ -70,11 +58,13 @@ export function setLastSyncedAt(ts: string): void {
   setItem(StorageKeys.LAST_SYNCED_AT, ts);
 }
 
-// Backward-compat shim — some screens call storage.getString / storage.set etc.
 export const storage = {
   getString,
   getBoolean,
-  set: (key: string, value: string | boolean | number) => setItem(key, String(value)),
+  set: (key: string, value: string | boolean | number) => {
+    if (typeof value === 'boolean') mmkv.set(key, value);
+    else mmkv.set(key, String(value));
+  },
   setBoolean: setBooleanItem,
   delete: deleteItem,
 };

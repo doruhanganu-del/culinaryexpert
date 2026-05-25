@@ -9,8 +9,9 @@ import './src/i18n';
 import AppNavigator from './src/navigation/AppNavigator';
 import { initStorage } from './src/store/storage';
 import { syncApi } from './src/api/endpoints';
-import { getLastSyncedAt, setLastSyncedAt } from './src/store/storage';
-import { AuthProvider } from './src/store/authContext';
+import { getLastSyncedAt, setLastSyncedAt, storage, StorageKeys } from './src/store/storage';
+import { AuthProvider, useAuth } from './src/store/authContext';
+import TrialModal from './src/components/TrialModal';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -20,20 +21,39 @@ const queryClient = new QueryClient({
   },
 });
 
+function TrialGate() {
+  const { isTrialDay12, isTrialExpired, trialDaysLeft } = useAuth();
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    if (!isTrialDay12 && !isTrialExpired) return;
+    const alreadyShown = storage.getBoolean(StorageKeys.TRIAL_NOTIFIED);
+    if (!alreadyShown) {
+      setShowModal(true);
+      storage.set(StorageKeys.TRIAL_NOTIFIED, true);
+    }
+  }, [isTrialDay12, isTrialExpired]);
+
+  return (
+    <TrialModal
+      visible={showModal}
+      daysLeft={trialDaysLeft ?? 0}
+      onDismiss={() => setShowModal(false)}
+    />
+  );
+}
+
 export default function App() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const init = async () => {
       try {
-        // Load AsyncStorage into in-memory cache before anything renders
         await initStorage();
-        // Best-effort background sync
-        try {
-          const lastSynced = getLastSyncedAt();
-          await syncApi.pull(lastSynced);
-          setLastSyncedAt(new Date().toISOString());
-        } catch {}
+        // Best-effort background sync — fire and forget so splash hides immediately
+        syncApi.pull(getLastSyncedAt())
+          .then(() => setLastSyncedAt(new Date().toISOString()))
+          .catch(() => {});
       } finally {
         setReady(true);
         await SplashScreen.hideAsync();
@@ -49,8 +69,9 @@ export default function App() {
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <StatusBar style="dark" />
+            <StatusBar style="light" translucent={false} />
             <AppNavigator />
+            <TrialGate />
           </AuthProvider>
         </QueryClientProvider>
       </SafeAreaProvider>

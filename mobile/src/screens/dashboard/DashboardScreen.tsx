@@ -5,7 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { userApi, mealPlanApi } from '../../api/endpoints';
+import { mealPlanApi } from '../../api/endpoints';
+import { useHealthScores } from '../../hooks/useHealthScores';
 import { storage, StorageKeys } from '../../store/storage';
 import { calcBMR, calcTDEE, calcBodyFatNavy, calcCalorieTarget, calcHealthScore, calcLeanMass } from '../../utils/healthCalc';
 import { calculateMacroTargets } from '../../utils/macroCalculations';
@@ -49,9 +50,8 @@ function getLocalHealthData() {
 export default function DashboardScreen() {
   const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList>>();
   const { t, i18n } = useTranslation();
-  const [meals,       setMeals]       = useState<MealPlanMeal[]>([]);
-  const [healthScore, setHealthScore] = useState<HealthScore | null>(null);
-  const [budgetMode,  setBudgetMode]  = useState(false);
+  const [meals,      setMeals]      = useState<MealPlanMeal[]>([]);
+  const [budgetMode, setBudgetMode] = useState(false);
   const [fastMode,    setFastMode]    = useState(false);
   const [sculptMode,  setSculptMode]  = useState(false);
 
@@ -62,14 +62,14 @@ export default function DashboardScreen() {
     return t('dashboard.goodEvening');
   }
 
+  const { data: healthScores = [] } = useHealthScores();
+  const healthScore = healthScores.length > 0 ? healthScores[healthScores.length - 1] : null;
+
   const localData = getLocalHealthData();
   const todayIndex = (new Date().getDay() + 6) % 7;
 
   useEffect(() => {
-    mealPlanApi.getActive().then(setMeals).catch(() => {});
-    userApi.getHealthScores().then(scores => {
-      if (scores.length > 0) setHealthScore(scores[scores.length - 1]);
-    }).catch(() => {});
+    mealPlanApi.getActive().then(data => setMeals(Array.isArray(data) ? data : [])).catch(() => {});
   }, []);
 
   const todayMeals = meals.filter(m => m.day_of_week === todayIndex);
@@ -108,23 +108,31 @@ export default function DashboardScreen() {
           </Text>
         </View>
 
-        {/* Health Score Hero */}
-        {displayScore != null && (
-          <View style={[styles.scoreCard, { borderLeftColor: scoreColor }]}>
-            <View style={styles.scoreLeft}>
-              <Text style={styles.scoreLabel}>{t('dashboard.healthScore')}</Text>
+        {/* Health Score Hero — always visible */}
+        <View style={[styles.scoreCard, { borderLeftColor: scoreColor }]}>
+          <View style={styles.scoreLeft}>
+            <Text style={styles.scoreLabel}>{t('dashboard.healthScore')}</Text>
+            {displayScore != null ? (
               <Text style={[styles.scoreValue, { color: scoreColor }]}>
                 {displayScore.toFixed(0)}<Text style={styles.scoreSub}>/100</Text>
               </Text>
-              {displayTDEE != null && (
-                <Text style={styles.tdeeText}>TDEE {Math.round(displayTDEE)} {t('dashboard.kcalPerDay')}</Text>
-              )}
-            </View>
-            <View style={[styles.scoreRing, { borderColor: scoreColor }]}>
-              <Text style={[styles.scoreRingNum, { color: scoreColor }]}>{displayScore.toFixed(0)}</Text>
-            </View>
+            ) : (
+              <Text style={[styles.scoreValue, { color: '#D1D5DB' }]}>
+                –<Text style={styles.scoreSub}>/100</Text>
+              </Text>
+            )}
+            {displayTDEE != null && (
+              <Text style={styles.tdeeText}>TDEE {Math.round(displayTDEE)} {t('dashboard.kcalPerDay')}</Text>
+            )}
           </View>
-        )}
+          <View style={[styles.scoreRing, { borderColor: scoreColor }]}>
+            {displayScore != null ? (
+              <Text style={[styles.scoreRingNum, { color: scoreColor }]}>{displayScore.toFixed(0)}</Text>
+            ) : (
+              <Text style={[styles.scoreRingNum, { color: '#D1D5DB' }]}>–</Text>
+            )}
+          </View>
+        </View>
 
         {/* Macro Targets for Today */}
         {macroTarget && (

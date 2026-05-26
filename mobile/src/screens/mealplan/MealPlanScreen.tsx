@@ -1,19 +1,173 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert, ActivityIndicator,
+  LayoutAnimation, Platform, UIManager,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useTranslation } from 'react-i18next';
-import type { MainTabParamList, MealPlanMeal } from '../../types';
+import type { MainTabParamList, MealPlanMeal, Recipe } from '../../types';
 import { mealPlanApi } from '../../api/endpoints';
 import { storage, StorageKeys } from '../../store/storage';
 
-const MEAL_ORDER: Record<string, number> = { breakfast: 0, lunch: 1, dinner: 2, snack: 3 };
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
+const MEAL_ORDER: Record<string, number> = {
+  pre_breakfast: 0, breakfast: 1, morning_snack: 2,
+  lunch: 3, afternoon_snack: 4, dinner: 5, snack: 6,
+};
 const TODAY_INDEX = (new Date().getDay() + 6) % 7;
 
 type GroceryNav = BottomTabNavigationProp<MainTabParamList, 'MealPlan'>;
+
+function RecipeAccordion({ recipe, servings, lang }: { recipe: Recipe; servings: number; lang: string }) {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+
+  const toggle = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setOpen(v => !v);
+  };
+
+  const totalPrep = ((recipe.prep_time_minutes ?? 0) + (recipe.cook_time_minutes ?? 0)) || recipe.total_time_minutes;
+  const diffIcon = recipe.difficulty === 'easy' ? '🟢' : recipe.difficulty === 'medium' ? '🟡' : '🔴';
+
+  return (
+    <View style={acc.wrapper}>
+      {/* Header — tappable */}
+      <TouchableOpacity style={acc.header} onPress={toggle} activeOpacity={0.75}>
+        <View style={acc.headerLeft}>
+          <Text style={acc.recipeName}>{recipe.title}</Text>
+          <View style={acc.pillRow}>
+            {totalPrep ? (
+              <Text style={acc.pill}>⏱ {totalPrep} {t('recipe.min')}</Text>
+            ) : null}
+            <Text style={acc.pill}>🔥 {Math.round((recipe.calories_per_serving ?? 0) * servings)} kcal</Text>
+            <Text style={acc.pill}>🥩 {Math.round((recipe.protein_g_per_serving ?? 0) * servings)}g</Text>
+            <Text style={acc.pill}>{diffIcon} {t(`recipe.difficulty.${recipe.difficulty}`)}</Text>
+          </View>
+        </View>
+        <Text style={acc.chevron}>{open ? '▲' : '▼'}</Text>
+      </TouchableOpacity>
+
+      {/* Expanded content */}
+      {open && (
+        <View style={acc.body}>
+          {/* Time info */}
+          {(recipe.prep_time_minutes != null || recipe.cook_time_minutes != null) && (
+            <View style={acc.timeRow}>
+              {recipe.prep_time_minutes != null && (
+                <View style={acc.timeItem}>
+                  <Text style={acc.timeVal}>{recipe.prep_time_minutes} {t('recipe.min')}</Text>
+                  <Text style={acc.timeLabel}>{t('recipe.prepTime')}</Text>
+                </View>
+              )}
+              {recipe.cook_time_minutes != null && (
+                <View style={acc.timeItem}>
+                  <Text style={acc.timeVal}>{recipe.cook_time_minutes} {t('recipe.min')}</Text>
+                  <Text style={acc.timeLabel}>{t('recipe.cookTime')}</Text>
+                </View>
+              )}
+              {recipe.total_time_minutes != null && (
+                <View style={acc.timeItem}>
+                  <Text style={acc.timeVal}>{recipe.total_time_minutes} {t('recipe.min')}</Text>
+                  <Text style={acc.timeLabel}>{t('recipe.totalTime')}</Text>
+                </View>
+              )}
+              <View style={acc.timeItem}>
+                <Text style={acc.timeVal}>1 {t('recipe.person')}</Text>
+                <Text style={acc.timeLabel}>{t('recipe.servings')}</Text>
+              </View>
+            </View>
+          )}
+
+          {/* Ingredients */}
+          {recipe.recipe_ingredients && recipe.recipe_ingredients.length > 0 && (
+            <View style={acc.section}>
+              <Text style={acc.sectionTitle}>🛒 {t('recipe.ingredients')}</Text>
+              {recipe.recipe_ingredients.map((ri, idx) => (
+                <View key={ri.id ?? idx} style={acc.ingredientRow}>
+                  <Text style={acc.bullet}>•</Text>
+                  <Text style={acc.ingredientText}>
+                    <Text style={acc.ingredientQty}>{ri.display_qty ?? `${ri.quantity_g}g`}</Text>
+                    {' '}{ri.ingredient?.name ?? ''}
+                    {ri.prep_note ? <Text style={acc.prepNote}> ({ri.prep_note})</Text> : null}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* Macros per serving */}
+          {(recipe.carbs_g_per_serving != null || recipe.fat_g_per_serving != null) && (
+            <View style={acc.macroRow}>
+              {recipe.protein_g_per_serving != null && (
+                <View style={acc.macroItem}>
+                  <Text style={acc.macroVal}>{Math.round(recipe.protein_g_per_serving * servings)}g</Text>
+                  <Text style={acc.macroLabel}>{t('dashboard.protein')}</Text>
+                </View>
+              )}
+              {recipe.carbs_g_per_serving != null && (
+                <View style={acc.macroItem}>
+                  <Text style={acc.macroVal}>{Math.round(recipe.carbs_g_per_serving * servings)}g</Text>
+                  <Text style={acc.macroLabel}>{t('dashboard.carbs')}</Text>
+                </View>
+              )}
+              {recipe.fat_g_per_serving != null && (
+                <View style={acc.macroItem}>
+                  <Text style={acc.macroVal}>{Math.round(recipe.fat_g_per_serving * servings)}g</Text>
+                  <Text style={acc.macroLabel}>{t('dashboard.fat')}</Text>
+                </View>
+              )}
+            </View>
+          )}
+
+          {/* Instructions */}
+          {recipe.instructions && recipe.instructions.length > 0 && (
+            <View style={acc.section}>
+              <Text style={acc.sectionTitle}>👨‍🍳 {t('recipe.instructions')}</Text>
+              {recipe.instructions.map((step, idx) => (
+                <View key={idx} style={acc.stepRow}>
+                  <View style={acc.stepNum}>
+                    <Text style={acc.stepNumText}>{step.step ?? idx + 1}</Text>
+                  </View>
+                  <View style={acc.stepContent}>
+                    <Text style={acc.stepText}>{step.text}</Text>
+                    {step.duration_min ? (
+                      <Text style={acc.stepDuration}>⏱ {step.duration_min} {t('recipe.min')}</Text>
+                    ) : null}
+                  </View>
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* Serving suggestion */}
+          {recipe.description && (
+            <View style={acc.section}>
+              <Text style={acc.sectionTitle}>🍽️ {t('recipe.serving')}</Text>
+              <Text style={acc.servingText}>{recipe.description}</Text>
+            </View>
+          )}
+
+          {/* Tags */}
+          {recipe.tags && recipe.tags.length > 0 && (
+            <View style={acc.tagRow}>
+              {recipe.tags.slice(0, 5).map(tag => (
+                <View key={tag} style={acc.tag}>
+                  <Text style={acc.tagText}>{tag}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+        </View>
+      )}
+    </View>
+  );
+}
 
 export default function MealPlanScreen() {
   const navigation  = useNavigation<GroceryNav>();
@@ -24,7 +178,6 @@ export default function MealPlanScreen() {
   const [generating,  setGenerating]  = useState(false);
   const dayScrollRef = useRef<ScrollView>(null);
 
-  // Jan 1 2024 is a Monday; offset i gives Mon=0 … Sun=6
   const DAY_LABELS = Array.from({ length: 7 }, (_, i) => {
     return new Intl.DateTimeFormat(i18n.language, { weekday: 'short' }).format(new Date(2024, 0, 1 + i));
   });
@@ -50,7 +203,7 @@ export default function MealPlanScreen() {
     const monday = getMondayDate();
     setGenerating(true);
     try {
-      const { plan_id } = await mealPlanApi.generate(monday);
+      const { plan_id } = await mealPlanApi.generate(monday, i18n.language);
       storage.set(StorageKeys.ACTIVE_PLAN_ID, plan_id);
       const fresh = await mealPlanApi.getActive();
       setMeals(Array.isArray(fresh) ? fresh : []);
@@ -80,7 +233,6 @@ export default function MealPlanScreen() {
     );
   }
 
-  // ── Empty state: no plan exists yet ──
   if ((meals ?? []).length === 0) {
     return (
       <SafeAreaView style={styles.container}>
@@ -162,14 +314,11 @@ export default function MealPlanScreen() {
           (dayMeals ?? []).map(meal => (
             <View key={meal.id} style={styles.mealCard}>
               <Text style={styles.mealType}>{t(`mealPlan.${meal.meal_type}`)}</Text>
+
               {meal.recipe ? (
                 <>
-                  <Text style={styles.mealName}>{meal.recipe.title}</Text>
-                  <View style={styles.mealMacros}>
-                    <Text style={styles.macroPill}>🔥 {Math.round((meal.recipe.calories_per_serving ?? 0) * meal.servings)} kcal</Text>
-                    <Text style={styles.macroPill}>🥩 {Math.round((meal.recipe.protein_g_per_serving ?? 0) * meal.servings)}g</Text>
-                    <Text style={styles.macroPill}>⏱ {meal.recipe.total_time_minutes ?? 0}min</Text>
-                  </View>
+                  <RecipeAccordion recipe={meal.recipe} servings={meal.servings} lang={i18n.language} />
+
                   <View style={styles.feedbackRow}>
                     <Text style={styles.feedbackPrompt}>{t('mealPlan.howWasIt')}</Text>
                     <TouchableOpacity
@@ -212,11 +361,55 @@ function getMondayDate(): string {
   return d.toISOString().split('T')[0];
 }
 
+// ─── Accordion styles ────────────────────────────────────────────────────────
+const acc = StyleSheet.create({
+  wrapper:       { backgroundColor: '#F9FAFB', borderRadius: 12, overflow: 'hidden', marginTop: 8 },
+  header:        { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 14, backgroundColor: '#F0FDF4' },
+  headerLeft:    { flex: 1, gap: 6 },
+  recipeName:    { fontSize: 16, fontWeight: '700', color: '#111827' },
+  pillRow:       { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  pill:          { backgroundColor: '#D1FAE5', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 10, fontSize: 11, color: '#065F46', fontWeight: '600' },
+  chevron:       { fontSize: 12, color: '#6B7280', marginLeft: 8 },
+  body:          { padding: 16, gap: 16 },
+
+  timeRow:       { flexDirection: 'row', gap: 0, backgroundColor: '#fff', borderRadius: 10, overflow: 'hidden' },
+  timeItem:      { flex: 1, alignItems: 'center', paddingVertical: 10, borderRightWidth: 1, borderRightColor: '#F3F4F6' },
+  timeVal:       { fontSize: 14, fontWeight: '700', color: '#111827' },
+  timeLabel:     { fontSize: 10, color: '#9CA3AF', marginTop: 2, textAlign: 'center' },
+
+  section:       { gap: 8 },
+  sectionTitle:  { fontSize: 13, fontWeight: '700', color: '#374151', textTransform: 'uppercase', letterSpacing: 0.5 },
+
+  ingredientRow: { flexDirection: 'row', gap: 8, alignItems: 'flex-start' },
+  bullet:        { color: '#1B4332', fontSize: 16, lineHeight: 20, width: 12 },
+  ingredientText:{ flex: 1, fontSize: 14, color: '#374151', lineHeight: 20 },
+  ingredientQty: { fontWeight: '700', color: '#111827' },
+  prepNote:      { color: '#6B7280', fontStyle: 'italic' },
+
+  macroRow:      { flexDirection: 'row', backgroundColor: '#fff', borderRadius: 10, overflow: 'hidden' },
+  macroItem:     { flex: 1, alignItems: 'center', paddingVertical: 10, borderRightWidth: 1, borderRightColor: '#F3F4F6' },
+  macroVal:      { fontSize: 15, fontWeight: '800', color: '#1B4332' },
+  macroLabel:    { fontSize: 10, color: '#9CA3AF', marginTop: 2 },
+
+  stepRow:       { flexDirection: 'row', gap: 12, alignItems: 'flex-start' },
+  stepNum:       { width: 28, height: 28, borderRadius: 14, backgroundColor: '#1B4332', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 },
+  stepNumText:   { color: '#fff', fontSize: 13, fontWeight: '800' },
+  stepContent:   { flex: 1, gap: 3 },
+  stepText:      { fontSize: 14, color: '#374151', lineHeight: 21 },
+  stepDuration:  { fontSize: 11, color: '#6B7280' },
+
+  servingText:   { fontSize: 14, color: '#374151', lineHeight: 21, fontStyle: 'italic' },
+
+  tagRow:        { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  tag:           { backgroundColor: '#F3F4F6', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10 },
+  tagText:       { fontSize: 12, color: '#6B7280' },
+});
+
+// ─── Screen styles ────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
   container:           { flex: 1, backgroundColor: '#F9FAFB' },
   loading:             { textAlign: 'center', marginTop: 80, color: '#6B7280', fontSize: 15 },
 
-  // Empty state
   emptyWrapper:        { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 },
   emptyHero:           { fontSize: 64, marginBottom: 16 },
   emptyTitle:          { fontSize: 24, fontWeight: '800', color: '#111827', textAlign: 'center', marginBottom: 10 },
@@ -230,12 +423,10 @@ const styles = StyleSheet.create({
   featureIcon:         { fontSize: 22 },
   featureText:         { fontSize: 14, color: '#374151', fontWeight: '500' },
 
-  // Normal state header
   headerRow:           { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 24, paddingTop: 16, marginBottom: 8 },
   title:               { fontSize: 24, fontWeight: '800', color: '#111827' },
   regenerate:          { fontSize: 14, color: '#1B4332', fontWeight: '600' },
 
-  // Day selector
   dayScroll:           { flexGrow: 0 },
   dayScrollContent:    { paddingHorizontal: 20, gap: 8, paddingVertical: 8 },
   dayChip:             { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 20, backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#E5E7EB', alignItems: 'center' },
@@ -245,21 +436,19 @@ const styles = StyleSheet.create({
   dayLabelActive:      { color: '#fff' },
   todayDot:            { width: 4, height: 4, borderRadius: 2, backgroundColor: '#1B4332', marginTop: 3 },
 
-  // Meal cards
-  mealList:            { paddingHorizontal: 24, paddingBottom: 32, gap: 12, paddingTop: 8 },
+  mealList:            { paddingHorizontal: 20, paddingBottom: 32, gap: 12, paddingTop: 8 },
   dayEmptyText:        { color: '#9CA3AF', textAlign: 'center', marginTop: 40, fontSize: 15 },
-  mealCard:            { backgroundColor: '#fff', borderRadius: 16, padding: 18 },
-  mealType:            { fontSize: 11, fontWeight: '700', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 1 },
-  mealName:            { fontSize: 18, fontWeight: '700', color: '#111827', marginTop: 4 },
-  mealMacros:          { flexDirection: 'row', gap: 8, marginTop: 10 },
-  macroPill:           { backgroundColor: '#F0FDF4', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12, fontSize: 12, color: '#1B4332', fontWeight: '600' },
-  feedbackRow:         { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 14, flexWrap: 'wrap' },
+  mealCard:            { backgroundColor: '#fff', borderRadius: 16, padding: 16 },
+  mealType:            { fontSize: 11, fontWeight: '700', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 },
+  noRecipe:            { color: '#9CA3AF', marginTop: 6, fontSize: 14 },
+
+  feedbackRow:         { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 12, flexWrap: 'wrap' },
   feedbackPrompt:      { fontSize: 13, color: '#6B7280', marginRight: 4 },
   feedbackBtn:         { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, borderWidth: 1.5, borderColor: '#E5E7EB' },
   feedbackBtnLoved:    { backgroundColor: '#FEF2F2', borderColor: '#FECACA' },
   feedbackBtnDisliked: { backgroundColor: '#F3F4F6', borderColor: '#D1D5DB' },
   feedbackBtnText:     { fontSize: 13, fontWeight: '500' },
-  noRecipe:            { color: '#9CA3AF', marginTop: 6, fontSize: 14 },
+
   groceriesButton:     { backgroundColor: '#1B4332', borderRadius: 16, paddingVertical: 16, alignItems: 'center', marginTop: 16 },
   groceriesButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 });

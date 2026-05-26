@@ -69,7 +69,7 @@ export default function App() {
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <StatusBar style="light" translucent={false} />
+            <StatusBar style="dark" translucent={false} />
             <AppNavigator />
             <TrialGate />
           </AuthProvider>

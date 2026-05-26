@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAuth } from '../store/authContext';
+import LanguageFAB from '../components/LanguageFAB';
 
 import WelcomeScreen           from '../screens/onboarding/WelcomeScreen';
 import UnitSelectionScreen     from '../screens/onboarding/UnitSelectionScreen';
@@ -21,7 +22,6 @@ import LoginScreen             from '../screens/onboarding/LoginScreen';
 
 import DashboardScreen from '../screens/dashboard/DashboardScreen';
 import MealPlanScreen  from '../screens/mealplan/MealPlanScreen';
-import SmartPrepScreen from '../screens/smartprep/SmartPrepScreen';
 import GroceriesScreen from '../screens/groceries/GroceriesScreen';
 import ProfileScreen   from '../screens/profile/ProfileScreen';
 
@@ -31,13 +31,12 @@ const Tab   = createBottomTabNavigator();
 const BRAND = '#1B4332';
 
 type TabConfig = {
-  labelKey: 'nav.today' | 'nav.mealPlan' | 'nav.prepHub' | 'nav.groceries' | 'nav.profile';
+  labelKey: 'nav.today' | 'nav.mealPlan' | 'nav.groceries' | 'nav.profile';
 };
 
 const TAB_CONFIG: Record<string, TabConfig> = {
   Dashboard: { labelKey: 'nav.today'     },
   MealPlan:  { labelKey: 'nav.mealPlan'  },
-  SmartPrep: { labelKey: 'nav.prepHub'   },
   Groceries: { labelKey: 'nav.groceries' },
   Profile:   { labelKey: 'nav.profile'   },
 };
@@ -85,22 +84,24 @@ function CustomTabBar({ state, navigation }: BottomTabBarProps) {
 
 function MainTabs() {
   return (
-    <Tab.Navigator
-      tabBar={(props) => <CustomTabBar {...props} />}
-      screenOptions={{ headerShown: false }}
-    >
-      <Tab.Screen name="Dashboard" component={DashboardScreen} />
-      <Tab.Screen name="MealPlan"  component={MealPlanScreen}  />
-      <Tab.Screen name="SmartPrep" component={SmartPrepScreen} />
-      <Tab.Screen name="Groceries" component={GroceriesScreen} />
-      <Tab.Screen name="Profile"   component={ProfileScreen}   />
-    </Tab.Navigator>
+    <View style={{ flex: 1 }}>
+      <Tab.Navigator
+        tabBar={(props) => <CustomTabBar {...props} />}
+        screenOptions={{ headerShown: false }}
+      >
+        <Tab.Screen name="Dashboard" component={DashboardScreen} />
+        <Tab.Screen name="MealPlan"  component={MealPlanScreen}  />
+        <Tab.Screen name="Groceries" component={GroceriesScreen} />
+        <Tab.Screen name="Profile"   component={ProfileScreen}   />
+      </Tab.Navigator>
+      <LanguageFAB />
+    </View>
   );
 }
 
 function OnboardingStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false, statusBarColor: '#1B4332', statusBarStyle: 'light' }}>
+    <Stack.Navigator screenOptions={{ headerShown: false, statusBarColor: '#fff', statusBarStyle: 'dark' }}>
       <Stack.Screen name="Welcome"           component={WelcomeScreen} />
       <Stack.Screen name="UnitSelection"     component={UnitSelectionScreen} />
       <Stack.Screen name="MedicalDisclaimer" component={MedicalDisclaimerScreen} />

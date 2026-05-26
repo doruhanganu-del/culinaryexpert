@@ -2,7 +2,7 @@ export type UnitSystem = 'metric' | 'imperial';
 export type Sex = 'male' | 'female';
 export type ActivityLevel = 'sedentary' | 'light' | 'moderate' | 'active' | 'very_active';
 export type Goal = 'weight_loss' | 'maintenance' | 'hypertrophy' | 'endurance';
-export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
+export type MealType = 'pre_breakfast' | 'breakfast' | 'morning_snack' | 'lunch' | 'afternoon_snack' | 'dinner' | 'snack';
 export type Feedback = 'loved' | 'disliked';
 export type GroceryScope = 'week' | 'next_day';
 export type StorageType = 'pantry' | 'fridge' | 'freezer';
@@ -212,7 +212,6 @@ export type OnboardingStackParamList = {
 export type MainTabParamList = {
   Dashboard: undefined;
   MealPlan: undefined;
-  SmartPrep: undefined;
   Groceries: undefined;
   Profile: undefined;
 };

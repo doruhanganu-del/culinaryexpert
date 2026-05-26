@@ -37,8 +37,13 @@ export default function GroceriesScreen() {
 
   const toggleItem = async (item: GroceryListItem) => {
     const newVal = !item.is_checked;
-    setItems(prev => prev.map(i => i.id === item.id ? { ...i, is_checked: newVal } : i));
-    if (listId) {
+    // Match by BOTH id and ingredient_id to guard against duplicate or null ids from backend
+    setItems(prev => prev.map(i =>
+      (i.id && i.id === item.id && i.ingredient_id === item.ingredient_id)
+        ? { ...i, is_checked: newVal }
+        : i
+    ));
+    if (listId && item.id) {
       try { await groceryApi.toggleItem(item.id, newVal); } catch {}
     }
   };

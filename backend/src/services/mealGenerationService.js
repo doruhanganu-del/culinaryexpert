@@ -3,13 +3,13 @@
 const supabase = require('../db/supabase');
 
 const MEAL_SLOTS = [
-  { day: 0, type: 'breakfast' }, { day: 0, type: 'lunch' }, { day: 0, type: 'dinner' },
-  { day: 1, type: 'breakfast' }, { day: 1, type: 'lunch' }, { day: 1, type: 'dinner' },
-  { day: 2, type: 'breakfast' }, { day: 2, type: 'lunch' }, { day: 2, type: 'dinner' },
-  { day: 3, type: 'breakfast' }, { day: 3, type: 'lunch' }, { day: 3, type: 'dinner' },
-  { day: 4, type: 'breakfast' }, { day: 4, type: 'lunch' }, { day: 4, type: 'dinner' },
-  { day: 5, type: 'breakfast' }, { day: 5, type: 'lunch' }, { day: 5, type: 'dinner' },
-  { day: 6, type: 'breakfast' }, { day: 6, type: 'lunch' }, { day: 6, type: 'dinner' },
+  { day: 0, type: 'pre_breakfast' }, { day: 0, type: 'breakfast' }, { day: 0, type: 'morning_snack' }, { day: 0, type: 'lunch' }, { day: 0, type: 'afternoon_snack' }, { day: 0, type: 'dinner' },
+  { day: 1, type: 'pre_breakfast' }, { day: 1, type: 'breakfast' }, { day: 1, type: 'morning_snack' }, { day: 1, type: 'lunch' }, { day: 1, type: 'afternoon_snack' }, { day: 1, type: 'dinner' },
+  { day: 2, type: 'pre_breakfast' }, { day: 2, type: 'breakfast' }, { day: 2, type: 'morning_snack' }, { day: 2, type: 'lunch' }, { day: 2, type: 'afternoon_snack' }, { day: 2, type: 'dinner' },
+  { day: 3, type: 'pre_breakfast' }, { day: 3, type: 'breakfast' }, { day: 3, type: 'morning_snack' }, { day: 3, type: 'lunch' }, { day: 3, type: 'afternoon_snack' }, { day: 3, type: 'dinner' },
+  { day: 4, type: 'pre_breakfast' }, { day: 4, type: 'breakfast' }, { day: 4, type: 'morning_snack' }, { day: 4, type: 'lunch' }, { day: 4, type: 'afternoon_snack' }, { day: 4, type: 'dinner' },
+  { day: 5, type: 'pre_breakfast' }, { day: 5, type: 'breakfast' }, { day: 5, type: 'morning_snack' }, { day: 5, type: 'lunch' }, { day: 5, type: 'afternoon_snack' }, { day: 5, type: 'dinner' },
+  { day: 6, type: 'pre_breakfast' }, { day: 6, type: 'breakfast' }, { day: 6, type: 'morning_snack' }, { day: 6, type: 'lunch' }, { day: 6, type: 'afternoon_snack' }, { day: 6, type: 'dinner' },
 ];
 
 async function fetchEligibleRecipes(preferences, mealType) {
@@ -34,7 +34,15 @@ async function fetchEligibleRecipes(preferences, mealType) {
   });
 }
 
-const MEAL_CAL_RATIO = { breakfast: 0.25, lunch: 0.30, dinner: 0.35, snack: 0.10 };
+const MEAL_CAL_RATIO = {
+  pre_breakfast:   0.07,
+  breakfast:       0.20,
+  morning_snack:   0.08,
+  lunch:           0.28,
+  afternoon_snack: 0.07,
+  dinner:          0.30,
+  snack:           0.10,
+};
 
 function getServingsForCalTarget(recipe, targetCal) {
   if (!recipe.calories_per_serving || recipe.calories_per_serving <= 0) return 1;
@@ -84,12 +92,10 @@ async function generateWeeklyMealPlan(userId, preferences, macroTargets) {
   const userFeedback = await fetchUserFeedback(userId);
 
   const totalCal = macroTargets?.calories ?? 2000;
-  const targetCalPerMeal = {
-    breakfast: totalCal * MEAL_CAL_RATIO.breakfast,
-    lunch:     totalCal * MEAL_CAL_RATIO.lunch,
-    dinner:    totalCal * MEAL_CAL_RATIO.dinner,
-    snack:     totalCal * MEAL_CAL_RATIO.snack,
-  };
+  const targetCalPerMeal = {};
+  for (const [type, ratio] of Object.entries(MEAL_CAL_RATIO)) {
+    targetCalPerMeal[type] = totalCal * ratio;
+  }
 
   const mealSlots = [];
   const usedRecipeIds = [];

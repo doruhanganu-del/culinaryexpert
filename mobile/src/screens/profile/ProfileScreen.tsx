@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet, TextInput, Alert,
-  Dimensions, Modal, FlatList, Linking,
+  Dimensions, Modal, FlatList,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -12,26 +12,12 @@ import { calcBodyFatNavy } from '../../utils/healthCalc';
 import { storage, StorageKeys } from '../../store/storage';
 import { useAuth } from '../../store/authContext';
 import { displayWeight, displayMeasurement } from '../../utils/unitConversions';
-import type { Measurement, HealthScore, UnitSystem, ActivityLevel, Goal } from '../../types';
+import type { Measurement, HealthScore, UnitSystem, ActivityLevel, Goal, Sex } from '../../types';
+import { supabaseUserApi } from '../../api/supabaseApi';
 
 const SCREEN_W = Dimensions.get('window').width;
 
 type ChartTab = 'weight' | 'score' | 'waist' | 'chest' | 'arm' | 'thigh';
-
-const LANGUAGES = [
-  { locale: 'en-US', flag: '🇺🇸', name: 'English (US)' },
-  { locale: 'en-GB', flag: '🇬🇧', name: 'English (UK)' },
-  { locale: 'es-ES', flag: '🇪🇸', name: 'Español' },
-  { locale: 'ca',    flag: '🏴',   name: 'Català' },
-  { locale: 'pt',    flag: '🇵🇹', name: 'Português' },
-  { locale: 'fr',    flag: '🇫🇷', name: 'Français' },
-  { locale: 'it',    flag: '🇮🇹', name: 'Italiano' },
-  { locale: 'de-DE', flag: '🇩🇪', name: 'Deutsch (DE)' },
-  { locale: 'de-AT', flag: '🇦🇹', name: 'Deutsch (AT)' },
-  { locale: 'nl',    flag: '🇳🇱', name: 'Nederlands' },
-  { locale: 'pl',    flag: '🇵🇱', name: 'Polski' },
-  { locale: 'ro',    flag: '🇷🇴', name: 'Română' },
-];
 
 function snakeToCamel(s: string) {
   return s.replace(/_([a-z])/g, (_, c: string) => c.toUpperCase());
@@ -41,6 +27,16 @@ const GOAL_ICONS: Record<Goal, string> = {
   weight_loss: '📉', maintenance: '⚖️', hypertrophy: '💪', endurance: '🏃',
 };
 
+function calcAgeFromBirthDate(birth_date: string | undefined): number | null {
+  if (!birth_date) return null;
+  const [y, m, d] = birth_date.split('-').map(Number);
+  if (!y || !m || !d) return null;
+  const today = new Date();
+  let age = today.getFullYear() - y;
+  if (today.getMonth() + 1 < m || (today.getMonth() + 1 === m && today.getDate() < d)) age--;
+  return Math.max(0, age);
+}
+
 export default function ProfileScreen() {
   const { t, i18n } = useTranslation();
   const { signOut } = useAuth();
@@ -48,13 +44,14 @@ export default function ProfileScreen() {
   const { data: healthScores  = [] }           = useHealthScores();
   const { mutateAsync: saveMeasurement }        = useSaveMeasurement();
 
-  const [unitSystem,    setUnitSystem]    = useState<UnitSystem>(
+  const [unitSystem, setUnitSystem] = useState<UnitSystem>(
     (storage.getString(StorageKeys.UNIT_SYSTEM) ?? 'metric') as UnitSystem
   );
-  const [activeChart,   setActiveChart]   = useState<ChartTab>('weight');
-  const [addingMeasure, setAddingMeasure] = useState(false);
-  const [showLangPicker, setShowLangPicker] = useState(false);
-  const [legalType, setLegalType] = useState<'privacy' | 'terms' | 'medical' | null>(null);
+  const [activeChart,    setActiveChart]    = useState<ChartTab>('weight');
+  const [addingMeasure,  setAddingMeasure]  = useState(false);
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [legalType,      setLegalType]      = useState<'privacy' | 'terms' | 'medical' | null>(null);
+  const [saving,         setSaving]         = useState(false);
 
   const [fWeight,    setFWeight]    = useState('');
   const [fNeck,      setFNeck]      = useState('');
@@ -71,6 +68,21 @@ export default function ProfileScreen() {
   const lifestyleStr = storage.getString('onboarding_lifestyle');
   const bio          = bioStr       ? JSON.parse(bioStr)       : {} as any;
   const lifestyle    = lifestyleStr ? JSON.parse(lifestyleStr) : {} as any;
+
+  // Profile edit state (initialised from bio/lifestyle)
+  const [eName,       setEName]       = useState(bio.name ?? '');
+  const [eSex,        setESex]        = useState<Sex | null>(bio.sex ?? null);
+  const [eDobD,       setEDobD]       = useState(bio.birth_date ? bio.birth_date.split('-')[2] ?? '' : '');
+  const [eDobM,       setEDobM]       = useState(bio.birth_date ? bio.birth_date.split('-')[1] ?? '' : '');
+  const [eDobY,       setEDobY]       = useState(bio.birth_date ? bio.birth_date.split('-')[0] ?? '' : '');
+  const [eWeight,     setEWeight]     = useState(String(bio.weight ?? ''));
+  const [eHeight,     setEHeight]     = useState(String(bio.height ?? ''));
+  const [eGoal,       setEGoal]       = useState<Goal | ''>(lifestyle.goal ?? '');
+  const [eActivity,   setEActivity]   = useState<ActivityLevel | ''>(lifestyle.activity ?? '');
+  const [eCookTime,   setECookTime]   = useState(String(lifestyle.cookTime ?? ''));
+  const [eFavFoods,   setEFavFoods]   = useState(lifestyle.favFoods ?? '');
+
+  const age = calcAgeFromBirthDate(bio.birth_date) ?? bio.age ?? null;
 
   const latestM = measurements[measurements.length - 1];
   const lUnit   = unitSystem === 'imperial' ? 'in' : 'cm';
@@ -142,6 +154,56 @@ export default function ProfileScreen() {
     }
   };
 
+  const handleSaveProfile = async () => {
+    setSaving(true);
+    try {
+      const newBirthDate = (eDobY && eDobM && eDobD)
+        ? `${eDobY.padStart(4,'0')}-${eDobM.padStart(2,'0')}-${eDobD.padStart(2,'0')}`
+        : bio.birth_date;
+      const newAge = newBirthDate ? calcAgeFromBirthDate(newBirthDate) ?? bio.age : bio.age;
+
+      const newBio = {
+        ...bio,
+        name:       eName.trim() || bio.name,
+        sex:        eSex ?? bio.sex,
+        birth_date: newBirthDate,
+        age:        newAge,
+        weight:     eWeight ? parseFloat(eWeight) : bio.weight,
+        height:     eHeight ? parseFloat(eHeight) : bio.height,
+      };
+      const newLifestyle = {
+        ...lifestyle,
+        goal:     eGoal     || lifestyle.goal,
+        activity: eActivity || lifestyle.activity,
+        cookTime: eCookTime  ? parseInt(eCookTime)  : lifestyle.cookTime,
+        favFoods: eFavFoods  || lifestyle.favFoods,
+      };
+
+      storage.set('onboarding_bio', JSON.stringify(newBio));
+      storage.set('onboarding_lifestyle', JSON.stringify(newLifestyle));
+
+      // Sync to Supabase
+      await supabaseUserApi.upsertProfile({
+        display_name:             newBio.name,
+        sex:                      newBio.sex,
+        birth_date:               newBio.birth_date,
+        weight:                   newBio.weight,
+        height:                   newBio.height,
+        activity_level:           newLifestyle.activity,
+        goal:                     newLifestyle.goal,
+        max_cooking_time_minutes: newLifestyle.cookTime,
+        favorite_foods:           (newLifestyle.favFoods ?? '').split(',').map((f: string) => f.trim().toLowerCase()).filter(Boolean),
+      }).catch(() => {});
+
+      setEditingProfile(false);
+      Alert.alert('', t('profile.saveChanges') + ' ✓');
+    } catch (e: any) {
+      Alert.alert('Error', e.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleLogout = () => {
     Alert.alert(t('profile.signOutConfirm'), t('profile.signOutMessage'), [
       { text: t('common.cancel'), style: 'cancel' },
@@ -160,19 +222,28 @@ export default function ProfileScreen() {
     { key: 'thigh',  label: t('profile.thigh') },
   ];
 
-  const currentLocale = i18n.language;
-  const currentLang   = LANGUAGES.find(l => l.locale === currentLocale) ?? LANGUAGES[0];
-
   if (isLoading && measurements.length === 0) {
     return <SafeAreaView style={styles.container}><Text style={styles.loading}>{t('common.loading')}</Text></SafeAreaView>;
   }
 
-  const hasPersonalInfo = bio.sex || bio.age || bio.weight || bio.height || lifestyle.goal;
+  const hasPersonalInfo = bio.sex || age || bio.weight || bio.height || lifestyle.goal;
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
-        <Text style={styles.title}>{t('profile.title')}</Text>
+
+        {/* Header with name */}
+        <View style={styles.headerRow}>
+          <View>
+            <Text style={styles.greeting}>{bio.name ? `👋 ${bio.name}` : t('profile.title')}</Text>
+            {age != null && (
+              <Text style={styles.ageSubtitle}>{age} {t('profile.age').toLowerCase()}</Text>
+            )}
+          </View>
+          <TouchableOpacity style={styles.editBtn} onPress={() => setEditingProfile(true)}>
+            <Text style={styles.editBtnText}>✏️ {t('profile.editProfile')}</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* ── Personal Information ── */}
         {hasPersonalInfo && (
@@ -187,10 +258,10 @@ export default function ProfileScreen() {
                   <Text style={styles.infoLabel}>{t('profile.sex')}</Text>
                 </View>
               )}
-              {bio.age && (
+              {age != null && (
                 <View style={styles.infoItem}>
                   <Text style={styles.infoEmoji}>🎂</Text>
-                  <Text style={styles.infoVal}>{bio.age} yrs</Text>
+                  <Text style={styles.infoVal}>{age}</Text>
                   <Text style={styles.infoLabel}>{t('profile.age')}</Text>
                 </View>
               )}
@@ -320,22 +391,23 @@ export default function ProfileScreen() {
         {addingMeasure && (
           <View style={styles.addForm}>
             {[
-              { label: `${t('profile.weight')} (${wUnit})`,                                      value: fWeight,    set: setFWeight    },
-              { label: `${t('onboarding.measurements.neck')} (${lUnit})`,                        value: fNeck,      set: setFNeck      },
-              { label: `${t('onboarding.measurements.waist')} (${lUnit})`,                       value: fWaist,     set: setFWaist     },
-              { label: `${t('onboarding.measurements.hips')} (${lUnit})`,                        value: fHips,      set: setFHips      },
-              { label: `${t('onboarding.measurements.hipsLower')} (${lUnit})`,                   value: fHipsLower, set: setFHipsLower },
-              { label: `${t('onboarding.measurements.chest')} (${lUnit})`,                       value: fChest,     set: setFChest     },
-              { label: `${t('profile.bicepCirc')} (${lUnit})`,                                   value: fArm,       set: setFArm       },
-              { label: `${t('onboarding.measurements.forearm')} (${lUnit})`,                     value: fForearm,   set: setFForearm   },
-              { label: `${t('profile.thighCirc')} (${lUnit})`,                                   value: fThigh,     set: setFThigh     },
-              { label: `${t('profile.calfCirc')} (${lUnit})`,                                    value: fCalf,      set: setFCalf      },
+              { label: `${t('profile.weight')} (${wUnit})`,                   value: fWeight,    set: setFWeight    },
+              { label: `${t('onboarding.measurements.neck')} (${lUnit})`,      value: fNeck,      set: setFNeck      },
+              { label: `${t('onboarding.measurements.waist')} (${lUnit})`,     value: fWaist,     set: setFWaist     },
+              { label: `${t('onboarding.measurements.hips')} (${lUnit})`,      value: fHips,      set: setFHips      },
+              { label: `${t('onboarding.measurements.hipsLower')} (${lUnit})`, value: fHipsLower, set: setFHipsLower },
+              { label: `${t('onboarding.measurements.chest')} (${lUnit})`,     value: fChest,     set: setFChest     },
+              { label: `${t('profile.bicepCirc')} (${lUnit})`,                 value: fArm,       set: setFArm       },
+              { label: `${t('onboarding.measurements.forearm')} (${lUnit})`,   value: fForearm,   set: setFForearm   },
+              { label: `${t('profile.thighCirc')} (${lUnit})`,                 value: fThigh,     set: setFThigh     },
+              { label: `${t('profile.calfCirc')} (${lUnit})`,                  value: fCalf,      set: setFCalf      },
             ].map(({ label, value, set }) => (
               <TextInput
                 key={label}
                 style={styles.input}
                 keyboardType="decimal-pad"
                 placeholder={label}
+                placeholderTextColor="#B0B7C3"
                 value={value}
                 onChangeText={set}
               />
@@ -378,16 +450,6 @@ export default function ProfileScreen() {
           </View>
         )}
 
-        {/* ── Language ── */}
-        <View style={styles.langCard}>
-          <Text style={styles.cardTitle}>{t('profile.languageTitle')}</Text>
-          <TouchableOpacity style={styles.langRow} onPress={() => setShowLangPicker(true)}>
-            <Text style={styles.langFlag}>{currentLang.flag}</Text>
-            <Text style={styles.langName}>{currentLang.name}</Text>
-            <Text style={styles.langArrow}>›</Text>
-          </TouchableOpacity>
-        </View>
-
         {/* ── Legal ── */}
         <View style={styles.legalCard}>
           <Text style={styles.cardTitle}>{t('profile.legal')}</Text>
@@ -407,6 +469,96 @@ export default function ProfileScreen() {
           <Text style={styles.logoutText}>{t('profile.signOut')}</Text>
         </TouchableOpacity>
       </ScrollView>
+
+      {/* ── Edit Profile Modal ── */}
+      <Modal
+        visible={editingProfile}
+        transparent
+        animationType="slide"
+        statusBarTranslucent
+        onRequestClose={() => setEditingProfile(false)}
+      >
+        <View style={styles.overlay}>
+          <View style={[styles.sheet, { maxHeight: '92%' }]}>
+            <View style={styles.sheetHandle} />
+            <Text style={styles.sheetTitle}>{t('profile.editProfile')}</Text>
+            <ScrollView style={{ paddingHorizontal: 24 }} showsVerticalScrollIndicator={false}>
+              {/* Name */}
+              <Text style={styles.editLabel}>{t('profile.name')}</Text>
+              <TextInput style={styles.editInput} value={eName} onChangeText={setEName} autoCapitalize="words" placeholderTextColor="#B0B7C3" />
+
+              {/* Sex */}
+              <Text style={styles.editLabel}>{t('onboarding.biologicalData.sex')}</Text>
+              <View style={styles.sexRow}>
+                {(['male', 'female'] as Sex[]).map(s => (
+                  <TouchableOpacity
+                    key={s}
+                    style={[styles.sexOpt, eSex === s && styles.sexOptSel]}
+                    onPress={() => setESex(s)}
+                  >
+                    <Text style={[styles.sexOptText, eSex === s && styles.sexOptTextSel]}>
+                      {s === 'male' ? '♂ ' : '♀ '}{t(`onboarding.biologicalData.${s}`)}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {/* Birth date */}
+              <Text style={styles.editLabel}>{t('profile.dateOfBirth')}</Text>
+              <View style={styles.dobRow}>
+                <TextInput style={[styles.editInput, styles.dobD]} keyboardType="number-pad" placeholder={t('onboarding.biologicalData.day')} placeholderTextColor="#B0B7C3" value={eDobD} onChangeText={v => setEDobD(v.replace(/[^0-9]/g, '').slice(0,2))} maxLength={2} />
+                <TextInput style={[styles.editInput, styles.dobD]} keyboardType="number-pad" placeholder={t('onboarding.biologicalData.month')} placeholderTextColor="#B0B7C3" value={eDobM} onChangeText={v => setEDobM(v.replace(/[^0-9]/g, '').slice(0,2))} maxLength={2} />
+                <TextInput style={[styles.editInput, { flex: 1.6 }]} keyboardType="number-pad" placeholder={t('onboarding.biologicalData.year')} placeholderTextColor="#B0B7C3" value={eDobY} onChangeText={v => setEDobY(v.replace(/[^0-9]/g, '').slice(0,4))} maxLength={4} />
+              </View>
+
+              {/* Weight & Height */}
+              <Text style={styles.editLabel}>{t('profile.weight')} ({wUnit})</Text>
+              <TextInput style={styles.editInput} keyboardType="decimal-pad" value={eWeight} onChangeText={setEWeight} placeholderTextColor="#B0B7C3" />
+              <Text style={styles.editLabel}>{t('profile.height')} ({lUnit})</Text>
+              <TextInput style={styles.editInput} keyboardType="decimal-pad" value={eHeight} onChangeText={setEHeight} placeholderTextColor="#B0B7C3" />
+
+              {/* Goal */}
+              <Text style={styles.editLabel}>{t('profile.goalLabel')}</Text>
+              <View style={styles.chipGrid}>
+                {(['weight_loss', 'maintenance', 'hypertrophy', 'endurance'] as Goal[]).map(g => (
+                  <TouchableOpacity key={g} style={[styles.optChip, eGoal === g && styles.optChipSel]} onPress={() => setEGoal(g)}>
+                    <Text style={[styles.optChipText, eGoal === g && styles.optChipTextSel]}>{t(`goal.${snakeToCamel(g)}`)}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {/* Activity */}
+              <Text style={styles.editLabel}>{t('profile.activityLevelLabel')}</Text>
+              <View style={styles.chipGrid}>
+                {(['sedentary', 'light', 'moderate', 'active', 'very_active'] as ActivityLevel[]).map(a => (
+                  <TouchableOpacity key={a} style={[styles.optChip, eActivity === a && styles.optChipSel]} onPress={() => setEActivity(a)}>
+                    <Text style={[styles.optChipText, eActivity === a && styles.optChipTextSel]}>{t(`activity.${snakeToCamel(a)}`)}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {/* Cook time */}
+              <Text style={styles.editLabel}>{t('profile.maxCookTimeLabel')} ({t('profile.minutes')})</Text>
+              <TextInput style={styles.editInput} keyboardType="number-pad" value={eCookTime} onChangeText={setECookTime} placeholderTextColor="#B0B7C3" />
+
+              {/* Fav foods */}
+              <Text style={styles.editLabel}>{t('profile.favouriteFoodsLabel')}</Text>
+              <TextInput style={[styles.editInput, { height: 70 }]} multiline value={eFavFoods} onChangeText={setEFavFoods} placeholderTextColor="#B0B7C3" />
+
+              <View style={{ height: 16 }} />
+            </ScrollView>
+
+            <View style={styles.editActions}>
+              <TouchableOpacity style={styles.cancelBtn} onPress={() => setEditingProfile(false)}>
+                <Text style={styles.cancelBtnText}>{t('common.cancel')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.saveProfileBtn, saving && { opacity: 0.6 }]} onPress={handleSaveProfile} disabled={saving}>
+                <Text style={styles.saveProfileBtnText}>{t('profile.saveChanges')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       {/* ── Legal content modal ── */}
       <Modal
@@ -455,42 +607,6 @@ export default function ProfileScreen() {
           </View>
         </View>
       </Modal>
-
-      {/* ── Language picker modal ── */}
-      <Modal
-        visible={showLangPicker}
-        transparent
-        animationType="slide"
-        statusBarTranslucent
-        onRequestClose={() => setShowLangPicker(false)}
-      >
-        <TouchableOpacity
-          style={styles.overlay}
-          activeOpacity={1}
-          onPress={() => setShowLangPicker(false)}
-        >
-          <View style={styles.sheet} onStartShouldSetResponder={() => true}>
-            <View style={styles.sheetHandle} />
-            <Text style={styles.sheetTitle}>{t('profile.languageTitle')}</Text>
-            <FlatList
-              data={LANGUAGES}
-              keyExtractor={item => item.locale}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[styles.langOption, currentLocale === item.locale && styles.langOptionSelected]}
-                  onPress={() => { i18n.changeLanguage(item.locale); setShowLangPicker(false); }}
-                >
-                  <Text style={styles.langOptionFlag}>{item.flag}</Text>
-                  <Text style={[styles.langOptionName, currentLocale === item.locale && styles.langOptionNameSelected]}>
-                    {item.name}
-                  </Text>
-                  {currentLocale === item.locale && <Text style={styles.checkmark}>✓</Text>}
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-        </TouchableOpacity>
-      </Modal>
     </SafeAreaView>
   );
 }
@@ -498,11 +614,18 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container:              { flex: 1, backgroundColor: '#F9FAFB' },
   loading:                { textAlign: 'center', marginTop: 80, color: '#6B7280' },
-  content:                { paddingHorizontal: 24, paddingBottom: 48, gap: 16 },
-  title:                  { fontSize: 26, fontWeight: '800', color: '#111827', marginTop: 16 },
+  content:                { paddingHorizontal: 24, paddingBottom: 80, gap: 16 },
+
+  // Header
+  headerRow:              { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 16 },
+  greeting:               { fontSize: 24, fontWeight: '800', color: '#111827' },
+  ageSubtitle:            { fontSize: 14, color: '#6B7280', marginTop: 2 },
+  editBtn:                { backgroundColor: '#F0FDF4', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 12, borderWidth: 1.5, borderColor: '#BBF7D0' },
+  editBtnText:            { color: '#1B4332', fontSize: 13, fontWeight: '600' },
 
   // Personal info
   infoCard:               { backgroundColor: '#fff', borderRadius: 16, padding: 20 },
+  cardTitle:              { fontSize: 14, fontWeight: '700', color: '#374151', marginBottom: 14 },
   infoGrid:               { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginBottom: 16 },
   infoItem:               { minWidth: '44%', flex: 1, alignItems: 'center', backgroundColor: '#F9FAFB', borderRadius: 12, paddingVertical: 12 },
   infoEmoji:              { fontSize: 22, marginBottom: 4 },
@@ -518,7 +641,6 @@ const styles = StyleSheet.create({
   chipText:               { fontSize: 12, color: '#EF4444', fontWeight: '500' },
 
   // Measurements
-  cardTitle:              { fontSize: 14, fontWeight: '700', color: '#374151', marginBottom: 14 },
   statsCard:              { backgroundColor: '#fff', borderRadius: 16, padding: 20 },
   statsGrid:              { flexDirection: 'row', flexWrap: 'wrap', gap: 16 },
   statItem:               { minWidth: '45%' },
@@ -542,13 +664,6 @@ const styles = StyleSheet.create({
   chartTabTextActive:     { color: '#fff' },
   chart:                  { alignItems: 'center' },
 
-  // Language
-  langCard:               { backgroundColor: '#fff', borderRadius: 16, padding: 20 },
-  langRow:                { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  langFlag:               { fontSize: 22 },
-  langName:               { flex: 1, fontSize: 15, color: '#374151', fontWeight: '500' },
-  langArrow:              { fontSize: 20, color: '#D1D5DB' },
-
   // Legal
   legalCard:              { backgroundColor: '#fff', borderRadius: 16, padding: 20 },
   legalRow:               { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#F3F4F6' },
@@ -559,22 +674,37 @@ const styles = StyleSheet.create({
   logoutButton:           { backgroundColor: '#FEF2F2', borderRadius: 14, paddingVertical: 14, alignItems: 'center', borderWidth: 1.5, borderColor: '#FECACA' },
   logoutText:             { color: '#EF4444', fontSize: 15, fontWeight: '700' },
 
-  // Legal modal content
+  // Legal modal
   legalContent:           { paddingTop: 8, paddingBottom: 16 },
   legalWarning:           { fontSize: 15, fontWeight: '700', color: '#D97706', marginBottom: 12 },
   legalPara:              { fontSize: 14, color: '#374151', lineHeight: 22, marginBottom: 12 },
   legalCloseBtn:          { backgroundColor: '#1B4332', borderRadius: 14, paddingVertical: 14, alignItems: 'center', marginHorizontal: 24, marginBottom: 12 },
   legalCloseBtnText:      { color: '#fff', fontSize: 16, fontWeight: '700' },
 
-  // Modal
+  // Modal base
   overlay:                { flex: 1, backgroundColor: 'rgba(0,0,0,0.55)', justifyContent: 'flex-end' },
-  sheet:                  { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingTop: 12, paddingBottom: 40, maxHeight: '72%' },
-  sheetHandle:            { width: 40, height: 4, backgroundColor: '#E5E7EB', borderRadius: 2, alignSelf: 'center', marginBottom: 16 },
-  sheetTitle:             { fontSize: 15, fontWeight: '700', color: '#374151', paddingHorizontal: 24, marginBottom: 8 },
-  langOption:             { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 24, paddingVertical: 14, gap: 14 },
-  langOptionSelected:     { backgroundColor: '#F0FDF4' },
-  langOptionFlag:         { fontSize: 24 },
-  langOptionName:         { flex: 1, fontSize: 16, color: '#374151', fontWeight: '500' },
-  langOptionNameSelected: { color: '#1B4332', fontWeight: '700' },
-  checkmark:              { fontSize: 16, color: '#1B4332', fontWeight: '800' },
+  sheet:                  { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingTop: 12, maxHeight: '72%' },
+  sheetHandle:            { width: 40, height: 4, backgroundColor: '#E5E7EB', borderRadius: 2, alignSelf: 'center', marginBottom: 12 },
+  sheetTitle:             { fontSize: 17, fontWeight: '800', color: '#111827', paddingHorizontal: 24, marginBottom: 12 },
+
+  // Edit profile modal
+  editLabel:              { fontSize: 13, fontWeight: '600', color: '#374151', marginBottom: 6, marginTop: 12 },
+  editInput:              { backgroundColor: '#F9FAFB', borderWidth: 1.5, borderColor: '#E5E7EB', borderRadius: 10, padding: 12, fontSize: 15, color: '#111827' },
+  sexRow:                 { flexDirection: 'row', gap: 10 },
+  sexOpt:                 { flex: 1, padding: 12, borderRadius: 10, borderWidth: 2, borderColor: '#E5E7EB', alignItems: 'center' },
+  sexOptSel:              { borderColor: '#1B4332', backgroundColor: '#F0FDF4' },
+  sexOptText:             { fontSize: 14, fontWeight: '600', color: '#6B7280' },
+  sexOptTextSel:          { color: '#1B4332' },
+  dobRow:                 { flexDirection: 'row', gap: 8 },
+  dobD:                   { flex: 1 },
+  chipGrid:               { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  optChip:                { paddingHorizontal: 12, paddingVertical: 7, borderRadius: 10, borderWidth: 1.5, borderColor: '#E5E7EB', backgroundColor: '#F9FAFB' },
+  optChipSel:             { backgroundColor: '#1B4332', borderColor: '#1B4332' },
+  optChipText:            { fontSize: 13, color: '#6B7280', fontWeight: '500' },
+  optChipTextSel:         { color: '#fff', fontWeight: '700' },
+  editActions:            { flexDirection: 'row', gap: 12, paddingHorizontal: 24, paddingVertical: 16 },
+  cancelBtn:              { flex: 1, backgroundColor: '#F3F4F6', borderRadius: 12, paddingVertical: 14, alignItems: 'center' },
+  cancelBtnText:          { color: '#374151', fontWeight: '600', fontSize: 15 },
+  saveProfileBtn:         { flex: 2, backgroundColor: '#1B4332', borderRadius: 12, paddingVertical: 14, alignItems: 'center' },
+  saveProfileBtnText:     { color: '#fff', fontWeight: '700', fontSize: 15 },
 });

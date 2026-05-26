@@ -15,6 +15,17 @@ import type { MainTabParamList } from '../../types';
 
 const BRAND = '#1B4332';
 
+function calcAgeFromBio(bio: any): number {
+  if (bio.birth_date) {
+    const [y, m, d] = bio.birth_date.split('-').map(Number);
+    const today = new Date();
+    let age = today.getFullYear() - y;
+    if (today.getMonth() + 1 < m || (today.getMonth() + 1 === m && today.getDate() < d)) age--;
+    return Math.max(1, age);
+  }
+  return parseInt(bio.age) || 25;
+}
+
 function getLocalHealthData() {
   try {
     const bio       = JSON.parse(storage.getString('onboarding_bio')          ?? '{}');
@@ -27,7 +38,7 @@ function getLocalHealthData() {
 
     const weightKg = toKg(bio.weight);
     const heightCm = toCm(bio.height);
-    const age      = parseInt(bio.age) || 25;
+    const age      = calcAgeFromBio(bio);
     const sex      = bio.sex as 'male' | 'female' | undefined;
     if (!weightKg || !heightCm || !sex) return null;
 

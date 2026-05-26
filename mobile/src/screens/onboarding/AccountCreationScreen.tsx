@@ -70,12 +70,14 @@ export default function AccountCreationScreen({ navigation }: Props) {
       const bio        = JSON.parse(storage.getString('onboarding_bio') ?? '{}');
       const meas       = JSON.parse(storage.getString('onboarding_measurements') ?? '{}');
       const lifestyle  = JSON.parse(storage.getString('onboarding_lifestyle') ?? '{}');
-      const birthYear  = new Date().getFullYear() - (parseInt(bio.age) || 25);
+      // Use stored birth_date directly; fallback to age-derived date for legacy data
+      const birthDate  = bio.birth_date ?? `${new Date().getFullYear() - (parseInt(bio.age) || 25)}-01-01`;
 
       await supabaseUserApi.upsertProfile({
         unit_system:              unitSystem,
+        display_name:             bio.name ?? null,
         sex:                      bio.sex,
-        birth_date:               `${birthYear}-01-01`,
+        birth_date:               birthDate,
         weight:                   parseFloat(bio.weight),
         height:                   parseFloat(bio.height),
         waist:                    num(meas.waist),

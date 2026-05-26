@@ -24,8 +24,8 @@ export const userApi = {
 
 // Meal Plans
 export const mealPlanApi = {
-  generate: (weekStartDate: string) =>
-    api.post<{ plan_id: string; macros: unknown; meal_count: number }>('/api/meal-plans', { week_start_date: weekStartDate }),
+  generate: (weekStartDate: string, language?: string) =>
+    api.post<{ plan_id: string; macros: unknown; meal_count: number }>('/api/meal-plans', { week_start_date: weekStartDate, language: language ?? 'en-US', servings: 1 }),
   getActive: () => api.get<MealPlanMeal[]>('/api/meal-plans/active'),
   submitFeedback: (mealId: string, feedback: 'loved' | 'disliked') =>
     api.post<{ success: boolean }>(`/api/meal-plans/meals/${mealId}/feedback`, { feedback }),

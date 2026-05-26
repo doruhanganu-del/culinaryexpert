@@ -10,7 +10,7 @@ const {
 
 async function createOrRegeneratePlan(req, res) {
   try {
-  const { week_start_date } = req.body;
+  const { week_start_date, language = 'en-US', servings = 1 } = req.body;
   if (!week_start_date) return res.status(400).json({ error: 'week_start_date is required' });
 
   // Fetch user data
@@ -75,7 +75,7 @@ async function createOrRegeneratePlan(req, res) {
     return res.status(400).json({ error: 'No recipes found matching your preferences. Try relaxing your dietary filters.' });
   }
 
-  const mealsToInsert = mealSlots.map(s => ({ ...s, meal_plan_id: plan.id, is_synced: true }));
+  const mealsToInsert = mealSlots.map(s => ({ ...s, meal_plan_id: plan.id, is_synced: true, servings: servings ?? 1 }));
 
   const { error: mealsErr } = await supabase.from('meal_plan_meals').insert(mealsToInsert);
   if (mealsErr) return res.status(400).json({ error: mealsErr.message });

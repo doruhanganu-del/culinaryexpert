@@ -39,7 +39,14 @@ async function generateGroceryList(req, res) {
     await supabase.from('grocery_list_items').insert(rows);
   }
 
-  res.status(201).json({ list_id: list.id, item_count: items.length, items });
+  // Nest ingredient info so mobile can read item.ingredient.name
+  const clientItems = items.map(({ name, supermarket_aisle, category, storage_type, ...rest }) => ({
+    ...rest,
+    supermarket_aisle,
+    ingredient: { name, supermarket_aisle, category, storage_type },
+  }));
+
+  res.status(201).json({ list_id: list.id, item_count: items.length, items: clientItems });
 }
 
 async function getGroceryList(req, res) {

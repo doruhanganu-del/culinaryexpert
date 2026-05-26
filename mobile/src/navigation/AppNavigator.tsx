@@ -100,7 +100,7 @@ function MainTabs() {
 
 function OnboardingStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{ headerShown: false, statusBarColor: '#1B4332', statusBarStyle: 'light' }}>
       <Stack.Screen name="Welcome"           component={WelcomeScreen} />
       <Stack.Screen name="UnitSelection"     component={UnitSelectionScreen} />
       <Stack.Screen name="MedicalDisclaimer" component={MedicalDisclaimerScreen} />

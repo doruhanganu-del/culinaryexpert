@@ -35,7 +35,7 @@ export default function MealPlanScreen() {
       .catch(() => setLoading(false));
   }, []);
 
-  const dayMeals = meals
+  const dayMeals = (meals ?? [])
     .filter(m => m.day_of_week === activeDay)
     .sort((a, b) => (MEAL_ORDER[a.meal_type] ?? 9) - (MEAL_ORDER[b.meal_type] ?? 9));
 
@@ -81,7 +81,7 @@ export default function MealPlanScreen() {
   }
 
   // ── Empty state: no plan exists yet ──
-  if (meals.length === 0) {
+  if ((meals ?? []).length === 0) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.emptyWrapper}>
@@ -156,10 +156,10 @@ export default function MealPlanScreen() {
 
       {/* Meals for selected day */}
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.mealList}>
-        {dayMeals.length === 0 ? (
+        {(dayMeals ?? []).length === 0 ? (
           <Text style={styles.dayEmptyText}>{t('mealPlan.noPlanToday')}</Text>
         ) : (
-          dayMeals.map(meal => (
+          (dayMeals ?? []).map(meal => (
             <View key={meal.id} style={styles.mealCard}>
               <Text style={styles.mealType}>{t(`mealPlan.${meal.meal_type}`)}</Text>
               {meal.recipe ? (

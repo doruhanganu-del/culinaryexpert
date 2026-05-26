@@ -14,7 +14,7 @@ export default function SmartPrepScreen() {
     const planId = storage.getString(StorageKeys.ACTIVE_PLAN_ID);
     if (planId) {
       mealPlanApi.getBatchCooking(planId)
-        .then(setSessions)
+        .then(data => setSessions(Array.isArray(data) ? data : []))
         .catch(() => {})
         .finally(() => setLoading(false));
     } else {
@@ -67,7 +67,7 @@ export default function SmartPrepScreen() {
               {expanded === session.session_number && (
                 <View style={styles.sessionBody}>
                   <Text style={styles.sectionTitle}>Prep Steps</Text>
-                  {session.steps.map((step: BatchCookingStep) => (
+                  {(session.steps ?? []).map((step: BatchCookingStep) => (
                     <View key={step.order} style={styles.step}>
                       <View style={styles.stepNumber}><Text style={styles.stepNumberText}>{step.order}</Text></View>
                       <View style={styles.stepContent}>
@@ -78,10 +78,10 @@ export default function SmartPrepScreen() {
                     </View>
                   ))}
 
-                  {session.storage_instructions.length > 0 && (
+                  {(session.storage_instructions ?? []).length > 0 && (
                     <>
                       <Text style={[styles.sectionTitle, { marginTop: 20 }]}>Storage Guide</Text>
-                      {session.storage_instructions.map((s: StorageInstruction, i: number) => (
+                      {(session.storage_instructions ?? []).map((s: StorageInstruction, i: number) => (
                         <View key={i} style={styles.storageRow}>
                           <Text style={styles.storageIcon}>{s.icon}</Text>
                           <View style={styles.storageInfo}>

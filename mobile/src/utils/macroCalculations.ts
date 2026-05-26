@@ -61,6 +61,7 @@ export function calculateMacroTargets(
   let fatPct: number;
 
   switch (goal) {
+    case 'weightLoss':
     case 'weight_loss':
       // 500 kcal deficit, high protein to preserve lean mass (2.2 g/kg LBM)
       calTarget = Math.max(tdee - 500, 1200);

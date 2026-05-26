@@ -278,5 +278,41 @@
                          "billedAs":  "Billed as {{total}}",
                          "remindLater":  "Remind me later",
                          "continueExpired":  "Continue with limited access"
-                     }
+                     },
+    "smartPrep": {
+        "title": "Smart Prep Hub",
+        "subtitle": "Cook twice a week — eat well every day.",
+        "philosophy": "Batch cooking 2× per week reduces your daily kitchen time by up to 70% while maximizing ingredient utilization.",
+        "empty": "Generate a meal plan first to see your prep schedule.",
+        "loading": "Loading your prep schedule…",
+        "session": "Session {{n}}",
+        "prepSteps": "Prep Steps",
+        "storageGuide": "Storage Guide",
+        "fridge": "Fridge",
+        "freezer": "Freezer"
+    },
+    "exercise": {
+        "title": "Exercise Recommendations",
+        "hypertrophy": {
+            "frequency": "4–5 days/week",
+            "type": "Weight Training",
+            "detail": "Progressive overload: squats, deadlifts, bench press, rows. Rest 48h between same muscle groups."
+        },
+        "weightLoss": {
+            "frequency": "3–5 days/week",
+            "type": "Cardio + Strength",
+            "detail": "Combine 30–45 min cardio with 2–3 days of strength training for optimal fat loss."
+        },
+        "maintenance": {
+            "frequency": "3–4 days/week",
+            "type": "Mixed Training",
+            "detail": "Balance cardio and weights to maintain muscle mass and overall fitness."
+        },
+        "endurance": {
+            "frequency": "5–6 days/week",
+            "type": "Aerobic Training",
+            "detail": "Long runs, cycling or swimming. Build aerobic base with Zone 2 sessions before adding intensity."
+        },
+        "medicalWarning": "⚠️ Your health score is critically low. We strongly recommend consulting a doctor before starting any diet or exercise programme."
+    }
 }

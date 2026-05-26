@@ -278,5 +278,41 @@
                          "billedAs":  "Gefactureerd als {{total}}",
                          "remindLater":  "Herinner me later",
                          "continueExpired":  "Doorgaan met beperkte toegang"
-                     }
+                     },
+    "smartPrep": {
+        "title": "Voorbereiding Hub",
+        "subtitle": "Kook twee keer per week — eet elke dag goed.",
+        "philosophy": "Batch koken 2× per week vermindert uw dagelijkse keukentijd met tot 70% terwijl het gebruik van ingrediënten wordt gemaximaliseerd.",
+        "empty": "Maak eerst een maaltijdplan aan om uw voorbereidingsschema te zien.",
+        "loading": "Uw voorbereidingsschema laden…",
+        "session": "Sessie {{n}}",
+        "prepSteps": "Voorbereidingsstappen",
+        "storageGuide": "Bewaargids",
+        "fridge": "Koelkast",
+        "freezer": "Vriezer"
+    },
+    "exercise": {
+        "title": "Beweegaanbevelingen",
+        "hypertrophy": {
+            "frequency": "4–5 dagen/week",
+            "type": "Krachttraining",
+            "detail": "Progressieve overbelasting: squats, deadlifts, bankdrukken, roeien. Rust 48u tussen dezelfde spiergroepen."
+        },
+        "weightLoss": {
+            "frequency": "3–5 dagen/week",
+            "type": "Cardio + Kracht",
+            "detail": "Combineer 30–45 min cardio met 2–3 dagen krachttraining voor optimaal vetverlies."
+        },
+        "maintenance": {
+            "frequency": "3–4 dagen/week",
+            "type": "Gemengde Training",
+            "detail": "Balanceer cardio en gewichten om spiermassa en algehele fitheid te behouden."
+        },
+        "endurance": {
+            "frequency": "5–6 dagen/week",
+            "type": "Duurtraining",
+            "detail": "Lange looptrainingen, fietsen of zwemmen. Bouw aerobe basis op met Zone 2-sessies voor intensiteit."
+        },
+        "medicalWarning": "⚠️ Uw gezondheidsscore is kritiek laag. We raden sterk aan een arts te raadplegen voordat u met een dieet of trainingsprogramma begint."
+    }
 }

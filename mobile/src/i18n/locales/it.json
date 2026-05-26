@@ -278,5 +278,41 @@
                          "billedAs":  "Fatturato come {{total}}",
                          "remindLater":  "Ricordamelo più tardi",
                          "continueExpired":  "Continua con accesso limitato"
-                     }
+                     },
+    "smartPrep": {
+        "title": "Hub di Preparazione",
+        "subtitle": "Cucina due volte a settimana — mangia bene ogni giorno.",
+        "philosophy": "Cucinare in batch 2× a settimana riduce il tuo tempo quotidiano in cucina fino al 70% massimizzando l'utilizzo degli ingredienti.",
+        "empty": "Genera prima un piano pasti per vedere il tuo programma di preparazione.",
+        "loading": "Caricamento del programma di preparazione…",
+        "session": "Sessione {{n}}",
+        "prepSteps": "Passi di Preparazione",
+        "storageGuide": "Guida alla Conservazione",
+        "fridge": "Frigo",
+        "freezer": "Freezer"
+    },
+    "exercise": {
+        "title": "Raccomandazioni di Esercizio",
+        "hypertrophy": {
+            "frequency": "4–5 giorni/settimana",
+            "type": "Allenamento con i Pesi",
+            "detail": "Sovraccarico progressivo: squat, stacco da terra, panca piana, rematori. Riposa 48h tra gli stessi gruppi muscolari."
+        },
+        "weightLoss": {
+            "frequency": "3–5 giorni/settimana",
+            "type": "Cardio + Forza",
+            "detail": "Combina 30–45 min di cardio con 2–3 giorni di allenamento della forza per una perdita di grasso ottimale."
+        },
+        "maintenance": {
+            "frequency": "3–4 giorni/settimana",
+            "type": "Allenamento Misto",
+            "detail": "Bilancia cardio e pesi per mantenere la massa muscolare e la forma fisica generale."
+        },
+        "endurance": {
+            "frequency": "5–6 giorni/settimana",
+            "type": "Allenamento Aerobico",
+            "detail": "Corse lunghe, ciclismo o nuoto. Costruisci la base aerobica con sessioni Zona 2 prima di aggiungere intensità."
+        },
+        "medicalWarning": "⚠️ Il tuo punteggio di salute è criticamente basso. Raccomandiamo vivamente di consultare un medico prima di iniziare qualsiasi dieta o programma di esercizio."
+    }
 }

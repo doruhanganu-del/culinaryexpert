@@ -278,5 +278,41 @@
                          "billedAs":  "Facturat ca {{total}}",
                          "remindLater":  "Amintește-mi mai târziu",
                          "continueExpired":  "Continuă cu acces limitat"
-                     }
+                     },
+    "smartPrep": {
+        "title": "Centrul de Pregătire",
+        "subtitle": "Gătește de două ori pe săptămână — mănâncă bine în fiecare zi.",
+        "philosophy": "Gătitul în loturi 2× pe săptămână reduce timpul tău zilnic în bucătărie cu până la 70% maximizând utilizarea ingredientelor.",
+        "empty": "Generează mai întâi un plan de mese pentru a vedea programul de pregătire.",
+        "loading": "Se încarcă programul de pregătire…",
+        "session": "Sesiunea {{n}}",
+        "prepSteps": "Pași de Pregătire",
+        "storageGuide": "Ghid de Depozitare",
+        "fridge": "Frigider",
+        "freezer": "Congelator"
+    },
+    "exercise": {
+        "title": "Recomandări de Exerciții",
+        "hypertrophy": {
+            "frequency": "4–5 zile/săptămână",
+            "type": "Antrenament cu Greutăți",
+            "detail": "Suprasolicitare progresivă: genuflexiuni, îndreptări, împins la piept, ramat. Odihnă 48h între aceleași grupe musculare."
+        },
+        "weightLoss": {
+            "frequency": "3–5 zile/săptămână",
+            "type": "Cardio + Forță",
+            "detail": "Combină 30–45 min de cardio cu 2–3 zile de antrenament de forță pentru pierderea optimă de grăsime."
+        },
+        "maintenance": {
+            "frequency": "3–4 zile/săptămână",
+            "type": "Antrenament Mixt",
+            "detail": "Echilibrează cardio și greutăți pentru a menține masa musculară și forma fizică generală."
+        },
+        "endurance": {
+            "frequency": "5–6 zile/săptămână",
+            "type": "Antrenament Aerobic",
+            "detail": "Alergări lungi, ciclism sau înot. Construiește baza aerobică cu sesiuni Zona 2 înainte de a adăuga intensitate."
+        },
+        "medicalWarning": "⚠️ Scorul tău de sănătate este critic scăzut. Recomandăm cu tărie să consulți un medic înainte de a începe orice dietă sau program de exerciții."
+    }
 }

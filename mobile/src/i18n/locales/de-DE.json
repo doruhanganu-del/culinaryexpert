@@ -278,5 +278,41 @@
                          "billedAs":  "Abgerechnet als {{total}}",
                          "remindLater":  "Später erinnern",
                          "continueExpired":  "Mit eingeschränktem Zugang fortfahren"
-                     }
+                     },
+    "smartPrep": {
+        "title": "Vorbereitungs-Hub",
+        "subtitle": "Zweimal pro Woche kochen — jeden Tag gut essen.",
+        "philosophy": "Batch-Kochen 2× pro Woche reduziert Ihre tägliche Küchenzeit um bis zu 70% und maximiert die Zutatennutzung.",
+        "empty": "Erstellen Sie zuerst einen Ernährungsplan, um Ihren Vorbereitungsplan zu sehen.",
+        "loading": "Vorbereitungsplan wird geladen…",
+        "session": "Sitzung {{n}}",
+        "prepSteps": "Vorbereitungsschritte",
+        "storageGuide": "Aufbewahrungsanleitung",
+        "fridge": "Kühlschrank",
+        "freezer": "Gefrierschrank"
+    },
+    "exercise": {
+        "title": "Trainingsempfehlungen",
+        "hypertrophy": {
+            "frequency": "4–5 Tage/Woche",
+            "type": "Krafttraining",
+            "detail": "Progressive Überlastung: Kniebeugen, Kreuzheben, Bankdrücken, Rudern. 48h Pause zwischen denselben Muskelgruppen."
+        },
+        "weightLoss": {
+            "frequency": "3–5 Tage/Woche",
+            "type": "Cardio + Kraft",
+            "detail": "30–45 min Cardio mit 2–3 Tagen Krafttraining für optimale Fettverbrennung kombinieren."
+        },
+        "maintenance": {
+            "frequency": "3–4 Tage/Woche",
+            "type": "Gemischtes Training",
+            "detail": "Cardio und Gewichte ausbalancieren, um Muskelmasse und allgemeine Fitness zu erhalten."
+        },
+        "endurance": {
+            "frequency": "5–6 Tage/Woche",
+            "type": "Ausdauertraining",
+            "detail": "Lange Läufe, Radfahren oder Schwimmen. Aerobe Basis mit Zone-2-Einheiten aufbauen, bevor Intensität hinzugefügt wird."
+        },
+        "medicalWarning": "⚠️ Ihr Gesundheitswert ist kritisch niedrig. Wir empfehlen dringend, vor Beginn jeder Diät oder jedes Trainingsprogramms einen Arzt aufzusuchen."
+    }
 }

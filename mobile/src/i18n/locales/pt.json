@@ -278,5 +278,41 @@
                          "billedAs":  "Faturado como {{total}}",
                          "remindLater":  "Lembrar mais tarde",
                          "continueExpired":  "Continuar com acesso limitado"
-                     }
+                     },
+    "smartPrep": {
+        "title": "Centro de Preparação",
+        "subtitle": "Cozinhe duas vezes por semana — coma bem todos os dias.",
+        "philosophy": "Cozinhar em lotes 2× por semana reduz o seu tempo diário na cozinha em até 70% maximizando o uso de ingredientes.",
+        "empty": "Gere um plano de refeições primeiro para ver o seu horário de preparação.",
+        "loading": "A carregar o seu horário de preparação…",
+        "session": "Sessão {{n}}",
+        "prepSteps": "Passos de Preparação",
+        "storageGuide": "Guia de Armazenamento",
+        "fridge": "Frigorífico",
+        "freezer": "Congelador"
+    },
+    "exercise": {
+        "title": "Recomendações de Exercício",
+        "hypertrophy": {
+            "frequency": "4–5 dias/semana",
+            "type": "Treino com Pesos",
+            "detail": "Sobrecarga progressiva: agachamentos, levantamento terra, supino, remadas. Descanse 48h entre grupos musculares."
+        },
+        "weightLoss": {
+            "frequency": "3–5 dias/semana",
+            "type": "Cardio + Força",
+            "detail": "Combine 30–45 min de cardio com 2–3 dias de treino de força para perda de gordura óptima."
+        },
+        "maintenance": {
+            "frequency": "3–4 dias/semana",
+            "type": "Treino Misto",
+            "detail": "Equilibre cardio e pesos para manter a massa muscular e a condição física geral."
+        },
+        "endurance": {
+            "frequency": "5–6 dias/semana",
+            "type": "Treino Aeróbico",
+            "detail": "Corridas longas, ciclismo ou natação. Construa base aeróbica com sessões Zona 2 antes de adicionar intensidade."
+        },
+        "medicalWarning": "⚠️ A sua pontuação de saúde é criticamente baixa. Recomendamos vivamente consultar um médico antes de iniciar qualquer dieta ou programa de exercício."
+    }
 }

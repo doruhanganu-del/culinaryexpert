@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { mealPlanApi } from '../../api/endpoints';
 import { storage, StorageKeys } from '../../store/storage';
 import type { BatchCookingSession, BatchCookingStep, StorageInstruction } from '../../types';
 
 export default function SmartPrepScreen() {
+  const { t, i18n } = useTranslation();
   const [sessions, setSessions] = useState<BatchCookingSession[]>([]);
   const [loading,  setLoading]  = useState(true);
   const [expanded, setExpanded] = useState<number | null>(1);
@@ -25,7 +27,7 @@ export default function SmartPrepScreen() {
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
-        <Text style={styles.loading}>Loading your prep schedule…</Text>
+        <Text style={styles.loading}>{t('smartPrep.loading')}</Text>
       </SafeAreaView>
     );
   }
@@ -33,18 +35,17 @@ export default function SmartPrepScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Smart Prep Hub</Text>
-        <Text style={styles.subtitle}>Cook twice a week — eat well every day.</Text>
+        <Text style={styles.title}>{t('smartPrep.title')}</Text>
+        <Text style={styles.subtitle}>{t('smartPrep.subtitle')}</Text>
 
         <View style={styles.philosophy}>
           <Text style={styles.philosophyText}>
-            🔁 Batch cooking 2× per week reduces your daily kitchen time by up to{' '}
-            <Text style={styles.bold}>70%</Text> while maximizing ingredient utilization.
+            🔁 {t('smartPrep.philosophy')}
           </Text>
         </View>
 
         {sessions.length === 0 ? (
-          <Text style={styles.empty}>Generate a meal plan first to see your prep schedule.</Text>
+          <Text style={styles.empty}>{t('smartPrep.empty')}</Text>
         ) : (
           sessions.map(session => (
             <View key={session.id} style={styles.sessionCard}>
@@ -53,9 +54,9 @@ export default function SmartPrepScreen() {
                 onPress={() => setExpanded(expanded === session.session_number ? null : session.session_number)}
               >
                 <View>
-                  <Text style={styles.sessionLabel}>Session {session.session_number}</Text>
+                  <Text style={styles.sessionLabel}>{t('smartPrep.session', { n: session.session_number })}</Text>
                   <Text style={styles.sessionDate}>
-                    {new Date(session.session_date).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
+                    {new Date(session.session_date).toLocaleDateString(i18n.language, { weekday: 'long', month: 'short', day: 'numeric' })}
                   </Text>
                 </View>
                 <View style={styles.sessionMeta}>
@@ -66,7 +67,7 @@ export default function SmartPrepScreen() {
 
               {expanded === session.session_number && (
                 <View style={styles.sessionBody}>
-                  <Text style={styles.sectionTitle}>Prep Steps</Text>
+                  <Text style={styles.sectionTitle}>{t('smartPrep.prepSteps')}</Text>
                   {(session.steps ?? []).map((step: BatchCookingStep) => (
                     <View key={step.order} style={styles.step}>
                       <View style={styles.stepNumber}><Text style={styles.stepNumberText}>{step.order}</Text></View>
@@ -80,7 +81,7 @@ export default function SmartPrepScreen() {
 
                   {(session.storage_instructions ?? []).length > 0 && (
                     <>
-                      <Text style={[styles.sectionTitle, { marginTop: 20 }]}>Storage Guide</Text>
+                      <Text style={[styles.sectionTitle, { marginTop: 20 }]}>{t('smartPrep.storageGuide')}</Text>
                       {(session.storage_instructions ?? []).map((s: StorageInstruction, i: number) => (
                         <View key={i} style={styles.storageRow}>
                           <Text style={styles.storageIcon}>{s.icon}</Text>
@@ -90,7 +91,7 @@ export default function SmartPrepScreen() {
                           </View>
                           <View style={[styles.storageBadge, s.storage === 'freezer' && styles.freezerBadge]}>
                             <Text style={styles.storageBadgeText}>
-                              {s.storage === 'fridge' ? 'Fridge' : 'Freezer'} · {s.duration_days}d
+                              {s.storage === 'fridge' ? t('smartPrep.fridge') : t('smartPrep.freezer')} · {s.duration_days}d
                             </Text>
                           </View>
                         </View>
@@ -115,7 +116,6 @@ const styles = StyleSheet.create({
   subtitle:          { color: '#6B7280', fontSize: 14, marginTop: 4, marginBottom: 16 },
   philosophy:        { backgroundColor: '#F0FDF4', borderRadius: 14, padding: 16, marginBottom: 20 },
   philosophyText:    { fontSize: 14, color: '#374151', lineHeight: 22 },
-  bold:              { fontWeight: '700', color: '#1B4332' },
   empty:             { color: '#9CA3AF', textAlign: 'center', marginTop: 60, fontSize: 15 },
   sessionCard:       { backgroundColor: '#fff', borderRadius: 16, marginBottom: 16, overflow: 'hidden' },
   sessionHeader:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 18 },

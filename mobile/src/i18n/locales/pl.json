@@ -278,5 +278,41 @@
                          "billedAs":  "Rozliczane jako {{total}}",
                          "remindLater":  "Przypomnij mi później",
                          "continueExpired":  "Kontynuuj z ograniczonym dostępem"
-                     }
+                     },
+    "smartPrep": {
+        "title": "Centrum Przygotowań",
+        "subtitle": "Gotuj dwa razy w tygodniu — jedz dobrze każdego dnia.",
+        "philosophy": "Gotowanie wsadowe 2× w tygodniu zmniejsza codzienny czas spędzony w kuchni o 70% przy maksymalnym wykorzystaniu składników.",
+        "empty": "Najpierw wygeneruj plan posiłków, aby zobaczyć harmonogram przygotowań.",
+        "loading": "Ładowanie harmonogramu przygotowań…",
+        "session": "Sesja {{n}}",
+        "prepSteps": "Kroki Przygotowania",
+        "storageGuide": "Przewodnik Przechowywania",
+        "fridge": "Lodówka",
+        "freezer": "Zamrażarka"
+    },
+    "exercise": {
+        "title": "Zalecenia Treningowe",
+        "hypertrophy": {
+            "frequency": "4–5 dni/tydzień",
+            "type": "Trening Siłowy",
+            "detail": "Progresywne przeciążenie: przysiady, martwy ciąg, wyciskanie, wiosłowanie. Odpoczynek 48h między tymi samymi grupami mięśniowymi."
+        },
+        "weightLoss": {
+            "frequency": "3–5 dni/tydzień",
+            "type": "Cardio + Siła",
+            "detail": "Połącz 30–45 min cardio z 2–3 dniami treningu siłowego dla optymalnej utraty tłuszczu."
+        },
+        "maintenance": {
+            "frequency": "3–4 dni/tydzień",
+            "type": "Trening Mieszany",
+            "detail": "Równoważ cardio i ciężary, aby utrzymać masę mięśniową i ogólną sprawność fizyczną."
+        },
+        "endurance": {
+            "frequency": "5–6 dni/tydzień",
+            "type": "Trening Wytrzymałościowy",
+            "detail": "Długie biegi, kolarstwo lub pływanie. Buduj bazę aerobową sesjami Strefy 2, zanim dodasz intensywność."
+        },
+        "medicalWarning": "⚠️ Twój wynik zdrowotny jest krytycznie niski. Zdecydowanie zalecamy konsultację z lekarzem przed rozpoczęciem jakiejkolwiek diety lub programu ćwiczeń."
+    }
 }

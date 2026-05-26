@@ -84,6 +84,13 @@ export default function DashboardScreen() {
 
   const scoreColor = displayScore == null ? BRAND : displayScore >= 75 ? '#059669' : displayScore >= 50 ? '#D97706' : '#EF4444';
 
+  const VALID_GOALS = ['hypertrophy', 'weightLoss', 'maintenance', 'endurance'] as const;
+  type ExerciseGoal = typeof VALID_GOALS[number];
+  const rawGoal = localData?.goal as string | undefined;
+  const exerciseGoal: ExerciseGoal = (rawGoal && VALID_GOALS.includes(rawGoal as ExerciseGoal))
+    ? (rawGoal as ExerciseGoal)
+    : 'maintenance';
+
   const QUICK_ACTIONS = [
     { label: t('nav.mealPlan'),  icon: 'calendar' as const, tab: 'MealPlan'  as keyof MainTabParamList, color: '#EEF2FF', iconColor: '#6366F1' },
     { label: t('nav.prepHub'),   icon: 'flame'    as const, tab: 'SmartPrep' as keyof MainTabParamList, color: '#FFF7ED', iconColor: '#F97316' },
@@ -107,6 +114,13 @@ export default function DashboardScreen() {
             {new Date().toLocaleDateString(i18n.language, { weekday: 'long', month: 'long', day: 'numeric' })}
           </Text>
         </View>
+
+        {/* Medical Warning — critical health score */}
+        {displayScore != null && displayScore < 40 && (
+          <View style={styles.medicalWarning}>
+            <Text style={styles.medicalWarningText}>{t('exercise.medicalWarning')}</Text>
+          </View>
+        )}
 
         {/* Health Score Hero — always visible */}
         <View style={[styles.scoreCard, { borderLeftColor: scoreColor }]}>
@@ -243,6 +257,20 @@ export default function DashboardScreen() {
           ))}
         </View>
 
+        {/* Exercise Recommendations */}
+        {localData && (
+          <View style={[styles.card, { marginBottom: 24 }]}>
+            <Text style={styles.cardTitle}>💪 {t('exercise.title')}</Text>
+            <View style={styles.exerciseRow}>
+              <View style={styles.exerciseStat}>
+                <Text style={styles.exerciseStatValue}>{t(`exercise.${exerciseGoal}.frequency`)}</Text>
+                <Text style={styles.exerciseStatLabel}>{t(`exercise.${exerciseGoal}.type`)}</Text>
+              </View>
+            </View>
+            <Text style={styles.exerciseDetail}>{t(`exercise.${exerciseGoal}.detail`)}</Text>
+          </View>
+        )}
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -297,4 +325,13 @@ const styles = StyleSheet.create({
   toggleInfo:      { flex: 1 },
   toggleLabel:     { fontSize: 14, fontWeight: '600', color: '#374151' },
   toggleDesc:      { fontSize: 12, color: '#9CA3AF', marginTop: 1 },
+
+  medicalWarning:     { marginHorizontal: 16, marginBottom: 12, backgroundColor: '#FEF2F2', borderRadius: 14, padding: 14, borderLeftWidth: 4, borderLeftColor: '#EF4444' },
+  medicalWarningText: { fontSize: 13, color: '#991B1B', lineHeight: 20, fontWeight: '500' },
+
+  exerciseRow:        { marginBottom: 10 },
+  exerciseStat:       { marginBottom: 4 },
+  exerciseStatValue:  { fontSize: 18, fontWeight: '800', color: BRAND },
+  exerciseStatLabel:  { fontSize: 13, color: '#6B7280', fontWeight: '600', marginTop: 1 },
+  exerciseDetail:     { fontSize: 13, color: '#374151', lineHeight: 20, backgroundColor: '#F0FDF4', borderRadius: 10, padding: 12, marginTop: 4 },
 });

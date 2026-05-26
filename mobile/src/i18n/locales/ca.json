@@ -278,5 +278,41 @@
                          "billedAs":  "Facturat com {{total}}",
                          "remindLater":  "Recorda\u0027m més tard",
                          "continueExpired":  "Continua amb accés limitat"
-                     }
+                     },
+    "smartPrep": {
+        "title": "Centre de Preparació",
+        "subtitle": "Cuina dos cops per setmana — menja bé cada dia.",
+        "philosophy": "Cuinar per lots 2× per setmana redueix el teu temps diari a la cuina fins un 70% maximitzant l'ús dels ingredients.",
+        "empty": "Genera primer un pla de menjars per veure el teu horari de preparació.",
+        "loading": "Carregant el teu horari de preparació…",
+        "session": "Sessió {{n}}",
+        "prepSteps": "Passos de Preparació",
+        "storageGuide": "Guia d'Emmagatzematge",
+        "fridge": "Nevera",
+        "freezer": "Congelador"
+    },
+    "exercise": {
+        "title": "Recomanacions d'Exercici",
+        "hypertrophy": {
+            "frequency": "4–5 dies/setmana",
+            "type": "Entrenament amb Peses",
+            "detail": "Sobrecàrrega progressiva: esquats, pes mort, press de banca, rems. Descansa 48h entre grups musculars."
+        },
+        "weightLoss": {
+            "frequency": "3–5 dies/setmana",
+            "type": "Cardio + Força",
+            "detail": "Combina 30–45 min de cardio amb 2–3 dies d'entrenament de força per a la pèrdua de greix òptima."
+        },
+        "maintenance": {
+            "frequency": "3–4 dies/setmana",
+            "type": "Entrenament Mixt",
+            "detail": "Equilibra cardio i peses per mantenir massa muscular i forma física general."
+        },
+        "endurance": {
+            "frequency": "5–6 dies/setmana",
+            "type": "Entrenament Aeròbic",
+            "detail": "Curses llargues, ciclisme o natació. Construeix base aeròbica amb sessions Zona 2 abans d'afegir intensitat."
+        },
+        "medicalWarning": "⚠️ La teva puntuació de salut és críticament baixa. Recomanem fortament consultar un metge abans de començar qualsevol dieta o programa d'exercicis."
+    }
 }

@@ -54,6 +54,7 @@ export function calcLeanMass(weightKg: number, bodyFatPct: number | null): numbe
 export function calcCalorieTarget(tdee: number, goal: string, sex?: 'male' | 'female'): number {
   const safeMin = sex === 'female' ? 1200 : 1500;
   switch (goal) {
+    case 'weightLoss':
     case 'weight_loss': return Math.max(Math.round(tdee - 500), safeMin);
     case 'hypertrophy': return Math.round(tdee + 200);
     default:            return Math.round(tdee);

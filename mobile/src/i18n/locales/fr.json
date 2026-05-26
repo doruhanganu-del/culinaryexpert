@@ -278,5 +278,41 @@
                          "billedAs":  "Facturé {{total}}",
                          "remindLater":  "Me rappeler plus tard",
                          "continueExpired":  "Continuer avec accès limité"
-                     }
+                     },
+    "smartPrep": {
+        "title": "Hub de Préparation",
+        "subtitle": "Cuisinez deux fois par semaine — mangez bien chaque jour.",
+        "philosophy": "La cuisson en lot 2× par semaine réduit votre temps quotidien en cuisine jusqu'à 70% tout en maximisant l'utilisation des ingrédients.",
+        "empty": "Générez d'abord un plan de repas pour voir votre planning de préparation.",
+        "loading": "Chargement de votre planning de préparation…",
+        "session": "Séance {{n}}",
+        "prepSteps": "Étapes de Préparation",
+        "storageGuide": "Guide de Conservation",
+        "fridge": "Réfrigérateur",
+        "freezer": "Congélateur"
+    },
+    "exercise": {
+        "title": "Recommandations d'Exercice",
+        "hypertrophy": {
+            "frequency": "4–5 jours/semaine",
+            "type": "Musculation",
+            "detail": "Surcharge progressive : squats, soulevés de terre, développé couché, rowing. Repos 48h entre les mêmes groupes musculaires."
+        },
+        "weightLoss": {
+            "frequency": "3–5 jours/semaine",
+            "type": "Cardio + Force",
+            "detail": "Combinez 30–45 min de cardio avec 2–3 jours de musculation pour une perte de graisse optimale."
+        },
+        "maintenance": {
+            "frequency": "3–4 jours/semaine",
+            "type": "Entraînement Mixte",
+            "detail": "Équilibrez cardio et musculation pour maintenir la masse musculaire et la forme physique générale."
+        },
+        "endurance": {
+            "frequency": "5–6 jours/semaine",
+            "type": "Entraînement Aérobie",
+            "detail": "Course longue, cyclisme ou natation. Construisez votre base aérobie avec des sessions Zone 2 avant d'ajouter de l'intensité."
+        },
+        "medicalWarning": "⚠️ Votre score de santé est critiquement bas. Nous recommandons fortement de consulter un médecin avant de commencer tout régime ou programme d'exercice."
+    }
 }

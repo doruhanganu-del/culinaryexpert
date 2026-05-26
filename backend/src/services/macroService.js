@@ -59,6 +59,7 @@ function calculateMacroTargets(tdee, goal, weightKg, bodyFatPct) {
 
   switch (goal) {
     case 'weight_loss':
+    case 'weightLoss':
       calTarget    = tdee * 0.85;
       proteinRatio = 0.33;
       carbRatio    = 0.38;

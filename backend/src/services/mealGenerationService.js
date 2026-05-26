@@ -34,7 +34,14 @@ async function fetchEligibleRecipes(preferences, mealType) {
   });
 }
 
-function scoreRecipe(recipe, preferences, usedRecipeIds, dayFeedback) {
+const MEAL_CAL_RATIO = { breakfast: 0.25, lunch: 0.30, dinner: 0.35, snack: 0.10 };
+
+function getServingsForCalTarget(recipe, targetCal) {
+  if (!recipe.calories_per_serving || recipe.calories_per_serving <= 0) return 1;
+  return Math.max(1, Math.min(3, Math.round(targetCal / recipe.calories_per_serving)));
+}
+
+function scoreRecipe(recipe, preferences, usedRecipeIds, dayFeedback, targetCalForMeal) {
   let score = 50;
 
   // Boost if in favorite foods
@@ -63,15 +70,29 @@ function scoreRecipe(recipe, preferences, usedRecipeIds, dayFeedback) {
     if (proteinCalRatio >= 0.30) score += 20;
   }
 
+  // Calorie density — prefer recipes that need fewer servings to hit target (more nutritionally complete)
+  if (targetCalForMeal && recipe.calories_per_serving > 0) {
+    const idealServings = targetCalForMeal / recipe.calories_per_serving;
+    const overshoot = Math.abs(Math.round(idealServings) - idealServings);
+    score += Math.max(0, 10 - overshoot * 20);
+  }
+
   return score + Math.random() * 5; // small entropy to avoid identical plans
 }
 
 async function generateWeeklyMealPlan(userId, preferences, macroTargets) {
   const userFeedback = await fetchUserFeedback(userId);
 
+  const totalCal = macroTargets?.calories ?? 2000;
+  const targetCalPerMeal = {
+    breakfast: totalCal * MEAL_CAL_RATIO.breakfast,
+    lunch:     totalCal * MEAL_CAL_RATIO.lunch,
+    dinner:    totalCal * MEAL_CAL_RATIO.dinner,
+    snack:     totalCal * MEAL_CAL_RATIO.snack,
+  };
+
   const mealSlots = [];
   const usedRecipeIds = [];
-
   const mealTypeCache = {};
 
   for (const slot of MEAL_SLOTS) {
@@ -79,10 +100,11 @@ async function generateWeeklyMealPlan(userId, preferences, macroTargets) {
       mealTypeCache[slot.type] = await fetchEligibleRecipes(preferences, slot.type);
     }
     const candidates = mealTypeCache[slot.type];
+    const targetCal  = targetCalPerMeal[slot.type] ?? totalCal * 0.25;
 
     const scored = candidates.map(r => ({
       recipe: r,
-      score: scoreRecipe(r, preferences, usedRecipeIds, userFeedback),
+      score: scoreRecipe(r, preferences, usedRecipeIds, userFeedback, targetCal),
     }));
     scored.sort((a, b) => b.score - a.score);
 
@@ -93,7 +115,7 @@ async function generateWeeklyMealPlan(userId, preferences, macroTargets) {
         day_of_week: slot.day,
         meal_type:   slot.type,
         recipe_id:   best.id,
-        servings:    1,
+        servings:    getServingsForCalTarget(best, targetCal),
       });
     }
   }

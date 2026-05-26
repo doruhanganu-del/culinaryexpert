@@ -9,6 +9,7 @@ const {
 } = require('../services/macroService');
 
 async function createOrRegeneratePlan(req, res) {
+  try {
   const { week_start_date } = req.body;
   if (!week_start_date) return res.status(400).json({ error: 'week_start_date is required' });
 
@@ -19,6 +20,8 @@ async function createOrRegeneratePlan(req, res) {
     .eq('id', req.userId)
     .single();
 
+  if (!user) return res.status(404).json({ error: 'User profile not found. Please complete onboarding.' });
+
   const { data: latestMeasurement } = await supabase
     .from('user_measurements')
     .select('*')
@@ -26,7 +29,7 @@ async function createOrRegeneratePlan(req, res) {
     .is('deleted_at', null)
     .order('measured_at', { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   const prefs = user.user_preferences;
   const age   = user.birth_date ? calculateAgeFromBirthDate(user.birth_date) : 30;
@@ -67,6 +70,11 @@ async function createOrRegeneratePlan(req, res) {
 
   // Generate meal slots
   const { mealSlots } = await generateWeeklyMealPlan(req.userId, prefs || {}, macros);
+
+  if (mealSlots.length === 0) {
+    return res.status(400).json({ error: 'No recipes found matching your preferences. Try relaxing your dietary filters.' });
+  }
+
   const mealsToInsert = mealSlots.map(s => ({ ...s, meal_plan_id: plan.id, is_synced: true }));
 
   const { error: mealsErr } = await supabase.from('meal_plan_meals').insert(mealsToInsert);
@@ -81,6 +89,10 @@ async function createOrRegeneratePlan(req, res) {
   }
 
   res.status(201).json({ plan_id: plan.id, macros, meal_count: mealsToInsert.length });
+  } catch (err) {
+    console.error('createOrRegeneratePlan error:', err);
+    return res.status(500).json({ error: err.message ?? 'Internal server error generating meal plan' });
+  }
 }
 
 async function getActivePlan(req, res) {

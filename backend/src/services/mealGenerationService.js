@@ -39,7 +39,7 @@ function scoreRecipe(recipe, preferences, usedRecipeIds, dayFeedback) {
 
   // Boost if in favorite foods
   const favFoods = (preferences.favorite_foods || []).map(f => f.toLowerCase());
-  if (favFoods.length > 0 && recipe.tags.some(t => favFoods.includes(t))) {
+  if (favFoods.length > 0 && (recipe.tags || []).some(t => favFoods.includes(t.toLowerCase()))) {
     score += 20;
   }
 

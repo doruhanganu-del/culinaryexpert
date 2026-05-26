@@ -118,7 +118,28 @@ async function upsertProfile(req, res) {
       const tdee   = calculateTDEE(bmr, activity_level || 'moderate');
       const bfPct  = calculateBodyFatNavy(sex, waistCm, neckCm, heightCm, hipsCm);
       const macros = calculateMacroTargets(tdee, goal || 'maintenance', weightKg, bfPct);
-      const score  = calculateHealthScore({ bodyFatPct: bfPct, sex, macroAdherencePct: 80 });
+
+      // Profile completeness → proxy for engagement and macro adherence
+      const hasBodyComp       = !!(waistCm && neckCm && heightCm);
+      const hasGoalAndActivity = !!(goal && activity_level && activity_level !== 'sedentary');
+      const macroAdherencePct  = bfPct != null ? 85 : (hasBodyComp ? 75 : 65);
+      const nutrientDensityPct = hasBodyComp ? 72 : 60;
+      const varietyPct         = hasGoalAndActivity ? 70 : 60;
+
+      const score = calculateHealthScore({ bodyFatPct: bfPct, sex, macroAdherencePct, nutrientDensityPct, varietyPct });
+
+      // bodyCompScore for breakdown
+      let bodyCompScore = 50;
+      if (bfPct != null) {
+        const healthyMin = sex === 'male' ? 10 : 18;
+        const healthyMax = sex === 'male' ? 20 : 28;
+        if (bfPct >= healthyMin && bfPct <= healthyMax) {
+          bodyCompScore = 100;
+        } else {
+          const dist = Math.min(Math.abs(bfPct - healthyMin), Math.abs(bfPct - healthyMax));
+          bodyCompScore = Math.max(0, 100 - dist * 5);
+        }
+      }
 
       await supabase.from('user_health_scores').insert({
         user_id:         req.userId,
@@ -127,7 +148,12 @@ async function upsertProfile(req, res) {
         tdee:            parseFloat(tdee.toFixed(2)),
         body_fat_pct:    bfPct,
         lean_mass_kg:    macros.leanMassKg,
-        score_breakdown: { macroScore: 80, bodyCompScore: 80 },
+        score_breakdown: {
+          macroAdherenceScore: macroAdherencePct,
+          nutrientDensityScore: nutrientDensityPct,
+          bodyCompScore:        parseFloat(bodyCompScore.toFixed(1)),
+          varietyScore:         varietyPct,
+        },
       });
     }
   }

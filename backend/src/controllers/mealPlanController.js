@@ -42,18 +42,10 @@ async function createOrRegeneratePlan(req, res) {
     bfPct
   );
 
-  // Archive existing active plan for this week
-  await supabase
-    .from('meal_plans')
-    .update({ status: 'archived' })
-    .eq('user_id', req.userId)
-    .eq('week_start_date', week_start_date)
-    .eq('status', 'active');
-
-  // Create new plan
+  // Upsert plan — works for both first generation and regeneration
   const { data: plan, error: planErr } = await supabase
     .from('meal_plans')
-    .insert({
+    .upsert({
       user_id:         req.userId,
       week_start_date,
       status:          'active',
@@ -61,11 +53,17 @@ async function createOrRegeneratePlan(req, res) {
       protein_target_g: macros.proteinG,
       carbs_target_g:   macros.carbsG,
       fat_target_g:     macros.fatG,
-    })
+    }, { onConflict: 'user_id,week_start_date' })
     .select()
     .single();
 
   if (planErr) return res.status(400).json({ error: planErr.message });
+
+  // Clear existing slots and batch sessions before regenerating
+  await supabase.from('meal_plan_meals').delete().eq('meal_plan_id', plan.id);
+  await supabase.from('batch_cooking_sessions').delete()
+    .eq('meal_plan_id', plan.id)
+    .eq('user_id', req.userId);
 
   // Generate meal slots
   const { mealSlots } = await generateWeeklyMealPlan(req.userId, prefs || {}, macros);
